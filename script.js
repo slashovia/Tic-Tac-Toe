@@ -1,12 +1,12 @@
-
-function createGameboard() {
-    const rows = 3;
-    const columns = 3;
-    const matrix = Array(rows)
-        .fill()
-        .map(() => Array(columns).fill());
-    return matrix;
+const Gameboard = {
+    createGameboard() {
+        const rows = 3;
+        const columns = 3;
+        const matrix = Array(rows)
+            .fill()
+            .map(() => Array(columns).fill(0));
+        return matrix;
+    }
 }
 
-
-console.log(createGameboard());
+console.log(Gameboard.createGameboard());
