@@ -6,7 +6,19 @@ const Gameboard = {
             .fill()
             .map(() => Array(columns).fill(0));
         return matrix;
+    },
+
+    createPlayer(playerName, marker) {
+        if (marker === 'o' || marker === 'x') {
+            return { playerName, marker };
+        }
+        return null;
     }
 }
 
-console.log(Gameboard.createGameboard());
+const gameboard = Gameboard.createGameboard();
+console.log(gameboard);
+const player1 = Gameboard.createPlayer('Hashmi', 'x');
+console.log(player1);
+const player2 = Gameboard.createPlayer('Antonio', 'o');
+console.log(player2);
