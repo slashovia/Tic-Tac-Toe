@@ -18,17 +18,21 @@ function createPlayer(name, marker) {
     const resetScore = () => score = 0;
     const makeMove = () => {
         let validMove = false;
-
         while (!validMove) {
-            let move = prompt(`${name}, make your move (row,column)!`);
-            let fixMove = move.split('');
+            let move = prompt(`${name}, make your move (row and column)!`);
+            let fixMove = move.split('').map(Number);
+            fixMove.forEach(number => {
+                if (number >= 0 && number <= 2) {
+                    if (fixMove.length === 2 && gameboard[fixMove[0]][fixMove[1]] === 0) {
+                        gameboard[fixMove[0]][fixMove[1]] = marker;
+                        validMove = true;
+                    }
+                }
+                else {
+                    alert('Warning, move not allowed. Try again.');
+                }
 
-            if (fixMove.length === 2 && gameboard[fixMove[0]] && gameboard[fixMove[0]][fixMove[1]] == '0') {
-                gameboard[fixMove[0]][fixMove[1]] = marker;
-                validMove = true;
-            } else {
-                alert('Warning, move not allowed. Try again.');
-            }
+            });
         }
     };
 
