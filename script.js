@@ -35,7 +35,7 @@ function createPlayer(name, marker) {
 
         };
     }
-    return { name, getScore, increaseScore, resetScore, makeMove };
+    return { name, marker, getScore, increaseScore, resetScore, makeMove };
 }
 
 const player1 = createPlayer('Hashmi', 'x');
@@ -51,18 +51,58 @@ const functionGame = (function (player1, player2, gameboard) {
         currentPlayer = (currentPlayer === player1) ? player2 : player1;
     }
 
+    function showScore(player) {
+        console.log(`${player.name}: ${player.getScore()}`);
+    }
+    const checker = () => {
+
+        //Check rows
+        gameboard.forEach(row => {
+            if (row.every(cell => cell === player1.marker)) {
+                console.log(`${player1.name} wins!`);
+                return;
+
+            }
+            else if (row.every(cell => cell === player2.marker)) {
+                console.log(`${player2.name} wins!`);
+                return;
+            }
+        }
+        );
+
+        //Check columns
+        for (let i = 0; i < gameboard.length; i++) {
+            if (gameboard.every(row => row[i] === player1.marker)) {
+                console.log(`${player1.name} wins!`);
+                return;
+            }
+            else if (gameboard.every(row => row[i] === player2.marker)) {
+                console.log(`${player2.name} wins!`);
+                return;
+            }
+        }
+
+        // Check diagonals
+        if ((gameboard[0][0] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][2] === player1.marker) || (gameboard[0][2] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][0] === player1.marker)) {
+            console.log(`${player1.name} wins!`);
+            return;
+        }
+        else if ((gameboard[0][0] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][2] === player2.marker) || (gameboard[0][2] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][0] === player2.marker)) {
+            console.log(`${player2.name} wins!`);
+            return;
+        }
+    }
     const playGame = () => {
         showGrid();
         let gameOver = false;
         while (!gameOver) {
             currentPlayer.makeMove();
+            checker(gameOver);
             switchTurn();
         }
+
     };
 
-    function showScore(player) {
-        console.log(`${player.name}: ${player.getScore()}`);
-    }
 
     return { playGame };
 })(player1, player2, gameboard);
@@ -71,9 +111,6 @@ const functionGame = (function (player1, player2, gameboard) {
 
 
 functionGame.playGame();
-
-
-
 
 
 
