@@ -7,30 +7,30 @@ const Gameboard = (function () {
             .map(() => Array(columns).fill(0));
         return matrix;
     };
-
-    const createPlayer = (name, marker) => {
-        let score = 0;
-        getScore = () => score;
-        increaseScore = () => score++;
-        resetScore = () => score = 0;
-        makeMove = () => {
-            let move = prompt(`${name}, make your move!`);
-            let fixMove = move.split('');
-            gameboard[fixMove[0]][fixMove[1]] = marker;
-        }
-        return { getScore, increaseScore, resetScore, makeMove };
-    };
-    return { createGameboard, createPlayer }
+    return { createGameboard }
 })();
+
+function createPlayer(name, marker) {
+    let score = 0;
+    getScore = () => score;
+    increaseScore = () => score++;
+    resetScore = () => score = 0;
+    makeMove = () => {
+        let move = prompt(`${name}, make your move!`);
+        let fixMove = move.split('');
+        gameboard[fixMove[0]][fixMove[1]] = marker;
+    }
+    return { getScore, increaseScore, resetScore, makeMove };
+};
 
 const showGrid = () => console.log(gameboard);
 const gameboard = Gameboard.createGameboard();
-const player1 = Gameboard.createPlayer('Hashmi', 'x');
-const player2 = Gameboard.createPlayer('Antonio', 'o');
+const player1 = createPlayer('Hashmi', 'x');
+const player2 = createPlayer('Antonio', 'o');
 
-// player1.makeMove();
-// player2.makeMove();
-// showGrid();
+showGrid();
+player1.makeMove();
+player2.makeMove();
 
 
 
