@@ -10,7 +10,6 @@ const Gameboard = (function () {
     return { createGameboard }
 })();
 
-
 function createPlayer(name, marker) {
     let score = 0;
     const getScore = () => score;
@@ -21,35 +20,58 @@ function createPlayer(name, marker) {
         while (!validMove) {
             let move = prompt(`${name}, make your move (row and column)!`);
             let fixMove = move.split('').map(Number);
-            fixMove.forEach(number => {
-                if (number >= 0 && number <= 2) {
-                    if (fixMove.length === 2 && gameboard[fixMove[0]][fixMove[1]] === 0) {
-                        gameboard[fixMove[0]][fixMove[1]] = marker;
-                        validMove = true;
-                    }
-                }
-                else {
-                    alert('Warning, move not allowed. Try again.');
-                }
+            if (fixMove.length === 2 &&
+                fixMove[0] >= 0 && fixMove[0] <= 2 &&
+                fixMove[1] >= 0 && fixMove[1] <= 2 &&
+                gameboard[fixMove[0]][fixMove[1]] === 0) {
 
-            });
-        }
-    };
+                gameboard[fixMove[0]][fixMove[1]] = marker;
+                validMove = true;
 
+            }
+            else {
+                alert('Warning, move not allowed. Try again.');
+            }
+
+        };
+    }
     return { name, getScore, increaseScore, resetScore, makeMove };
 }
 
-function showScore(player) {
-    console.log(`${player.name}: ${player.getScore()}`);
-}
-
-const gameboard = Gameboard.createGameboard();
 const player1 = createPlayer('Hashmi', 'x');
 const player2 = createPlayer('Antonio', 'o');
-const showGrid = () => console.log(gameboard);
+const gameboard = Gameboard.createGameboard();
 
-showGrid();
-player1.makeMove();
+const functionGame = (function (player1, player2, gameboard) {
+    let currentPlayer = player1;
+
+    const showGrid = () => console.log(gameboard);
+
+    const switchTurn = () => {
+        currentPlayer = (currentPlayer === player1) ? player2 : player1;
+    }
+
+    const playGame = () => {
+        showGrid();
+        let gameOver = false;
+        while (!gameOver) {
+            currentPlayer.makeMove();
+            switchTurn();
+        }
+    };
+
+    function showScore(player) {
+        console.log(`${player.name}: ${player.getScore()}`);
+    }
+
+    return { playGame };
+})(player1, player2, gameboard);
+
+
+
+
+functionGame.playGame();
+
 
 
 
