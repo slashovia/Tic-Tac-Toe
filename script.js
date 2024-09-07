@@ -10,6 +10,7 @@ const Gameboard = (function () {
     return { createGameboard }
 })();
 
+
 function createPlayer(name, marker) {
     let score = 0;
     getScore = () => score;
@@ -20,13 +21,17 @@ function createPlayer(name, marker) {
         let fixMove = move.split('');
         gameboard[fixMove[0]][fixMove[1]] = marker;
     }
-    return { getScore, increaseScore, resetScore, makeMove };
+    return { name, getScore, increaseScore, resetScore, makeMove };
 };
 
-const showGrid = () => console.log(gameboard);
+function showScore(player) {
+    console.log(`${player.name}: ${player.getScore()}`);
+}
+
 const gameboard = Gameboard.createGameboard();
 const player1 = createPlayer('Hashmi', 'x');
 const player2 = createPlayer('Antonio', 'o');
+const showGrid = () => console.log(gameboard);
 
 showGrid();
 player1.makeMove();
