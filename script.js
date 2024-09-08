@@ -43,7 +43,9 @@ const player2 = createPlayer('Antonio', 'o');
 const gameboard = Gameboard.createGameboard();
 
 const functionGame = (function (player1, player2, gameboard) {
+
     let currentPlayer = player1;
+    let gameOver = false;
 
     const showGrid = () => console.log(gameboard);
 
@@ -54,18 +56,19 @@ const functionGame = (function (player1, player2, gameboard) {
     function showScore(player) {
         console.log(`${player.name}: ${player.getScore()}`);
     }
-    const checker = () => {
+
+    const moveChecker = () => {
 
         //Check rows
         gameboard.forEach(row => {
             if (row.every(cell => cell === player1.marker)) {
                 console.log(`${player1.name} wins!`);
-                return;
+                return gameOver = true;
 
             }
             else if (row.every(cell => cell === player2.marker)) {
                 console.log(`${player2.name} wins!`);
-                return;
+                return gameOver = true;
             }
         }
         );
@@ -74,33 +77,32 @@ const functionGame = (function (player1, player2, gameboard) {
         for (let i = 0; i < gameboard.length; i++) {
             if (gameboard.every(row => row[i] === player1.marker)) {
                 console.log(`${player1.name} wins!`);
-                return;
+                return gameOver = true;
             }
             else if (gameboard.every(row => row[i] === player2.marker)) {
                 console.log(`${player2.name} wins!`);
-                return;
+                return gameOver = true;
             }
         }
 
         // Check diagonals
         if ((gameboard[0][0] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][2] === player1.marker) || (gameboard[0][2] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][0] === player1.marker)) {
             console.log(`${player1.name} wins!`);
-            return;
+            return gameOver = true;
         }
         else if ((gameboard[0][0] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][2] === player2.marker) || (gameboard[0][2] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][0] === player2.marker)) {
             console.log(`${player2.name} wins!`);
-            return;
+            return gameOver = true;
         }
     }
+
     const playGame = () => {
         showGrid();
-        let gameOver = false;
         while (!gameOver) {
             currentPlayer.makeMove();
-            checker(gameOver);
+            moveChecker();
             switchTurn();
         }
-
     };
 
 
