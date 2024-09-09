@@ -12,9 +12,6 @@ const Gameboard = (function () {
 
 function createPlayer(name, marker) {
     let score = 0;
-    const getScore = () => score;
-    const increaseScore = () => score++;
-    const resetScore = () => score = 0;
     const makeMove = () => {
         let validMove = false;
         while (!validMove) {
@@ -35,7 +32,7 @@ function createPlayer(name, marker) {
 
         };
     }
-    return { name, marker, getScore, increaseScore, resetScore, makeMove };
+    return { name, marker, score, makeMove };
 }
 
 const player1 = createPlayer('Hashmi', 'x');
@@ -47,27 +44,34 @@ const functionGame = (function (player1, player2, gameboard) {
     let currentPlayer = player1;
     let gameOver = false;
 
-    const showGrid = () => console.log(gameboard);
+    increaseScore = player => player.score++;
 
-    const switchTurn = () => {
+    showScore = () => {
+        console.log(`${player1.name}: ${player1.score}`);
+        console.log(`${player2.name}: ${player2.score}`);
+    }
+
+    showGrid = () => console.log(gameboard);
+
+
+    switchTurn = () => {
         currentPlayer = (currentPlayer === player1) ? player2 : player1;
     }
 
-    function showScore(player) {
-        console.log(`${player.name}: ${player.getScore()}`);
-    }
-
-    const moveChecker = () => {
+    moveChecker = () => {
 
         //Check rows
         gameboard.forEach(row => {
             if (row.every(cell => cell === player1.marker)) {
                 console.log(`${player1.name} wins!`);
+                increaseScore(player1);
                 return gameOver = true;
 
             }
+
             else if (row.every(cell => cell === player2.marker)) {
                 console.log(`${player2.name} wins!`);
+                increaseScore(player2);
                 return gameOver = true;
             }
         }
@@ -77,10 +81,12 @@ const functionGame = (function (player1, player2, gameboard) {
         for (let i = 0; i < gameboard.length; i++) {
             if (gameboard.every(row => row[i] === player1.marker)) {
                 console.log(`${player1.name} wins!`);
+                increaseScore(player1);
                 return gameOver = true;
             }
             else if (gameboard.every(row => row[i] === player2.marker)) {
                 console.log(`${player2.name} wins!`);
+                increaseScore(player2);
                 return gameOver = true;
             }
         }
@@ -88,16 +94,19 @@ const functionGame = (function (player1, player2, gameboard) {
         // Check diagonals
         if ((gameboard[0][0] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][2] === player1.marker) || (gameboard[0][2] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][0] === player1.marker)) {
             console.log(`${player1.name} wins!`);
+            increaseScore(player1);
             return gameOver = true;
         }
         else if ((gameboard[0][0] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][2] === player2.marker) || (gameboard[0][2] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][0] === player2.marker)) {
             console.log(`${player2.name} wins!`);
+            increaseScore(player2);
             return gameOver = true;
         }
     }
 
-    const playGame = () => {
+    playGame = () => {
         showGrid();
+        showScore();
         while (!gameOver) {
             currentPlayer.makeMove();
             moveChecker();
