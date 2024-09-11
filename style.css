@@ -15,6 +15,10 @@ main {
     row-gap: 5em;
 }
 
+input {
+    cursor: pointer;
+}
+
 .info {
     grid-area: info;
 }
@@ -40,18 +44,27 @@ main {
 
 table {
     border-collapse: collapse;
-}
 
-table * {
-    border: 1px solid black;
-    padding: 0.5em;
-}
+    & * {
+        border: 1px solid black;
+        padding: 0.5em;
+    }
 
-tbody td {
-    text-align: center;
+    & tbody td {
+        text-align: center;
+    }
 }
 
 .buttons {
     grid-area: buttons;
+    justify-self: center;
+    display: flex;
+    gap: 2em;
+
+    & input {
+        padding: 0.5em;
+        width: 100px;
+        border-radius: 0.5em;
+    }
 
 }
