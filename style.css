@@ -1,3 +1,8 @@
+header,
+main {
+    margin: 2em;
+}
+
 header h1 {
     text-align: center;
 }
@@ -5,10 +10,15 @@ header h1 {
 main {
     display: grid;
     grid-template-columns: 1fr minmax(300px, 2fr) 1fr;
-    grid-template-areas: '. gameboard scoreboard'
+    grid-template-areas: 'info gameboard scoreboard'
         'buttons buttons buttons';
     row-gap: 5em;
 }
+
+.info {
+    grid-area: info;
+}
+
 
 .gameboard {
     grid-area: gameboard;
@@ -25,6 +35,20 @@ main {
 
 .scoreboard {
     grid-area: scoreboard;
+    justify-self: center;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table * {
+    border: 1px solid black;
+    padding: 0.5em;
+}
+
+tbody td {
+    text-align: center;
 }
 
 .buttons {
