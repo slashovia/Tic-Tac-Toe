@@ -1,3 +1,15 @@
+const domElements = (function () {
+    let cell = document.querySelectorAll('.cell');
+    let livePlayer = document.querySelector('.current-player');
+    let scorePlayer1 = document.querySelector('.scoreboard td:first-child');
+    let scorePlayer2 = document.querySelector('.scoreboard td:last-child');
+    let startBtn = document.querySelector('#startBtn');
+    let resetBtn = document.querySelector('#resetBtn');
+    let restartBtn = document.querySelector('#restartBtn');
+
+    return { livePlayer }
+})();
+
 const Gameboard = (function () {
     createGameboard = () => {
         const rows = 3;
@@ -42,7 +54,7 @@ const player1 = Player.createPlayer('Hashmi', 'x');
 const player2 = Player.createPlayer('Antonio', 'o');
 const gameboard = Gameboard.createGameboard();
 
-const functionGame = (function (player1, player2, gameboard) {
+const functionGame = (function (player1, player2, gameboard, livePlayer) {
 
     let currentPlayer = player1;
     let gameOver = false;
@@ -58,7 +70,16 @@ const functionGame = (function (player1, player2, gameboard) {
 
 
     switchTurn = () => {
-        currentPlayer = (currentPlayer === player1) ? player2 : player1;
+        // currentPlayer = (currentPlayer === player1) ? player2 : player1;
+
+        if (currentPlayer === player1) {
+            currentPlayer = player2;
+            livePlayer.textContent = 'Player 2';
+        }
+        else {
+            currentPlayer = player1;
+            livePlayer.textContent = 'Player 1';
+        }
     }
 
     moveChecker = () => {
@@ -118,7 +139,7 @@ const functionGame = (function (player1, player2, gameboard) {
     };
 
 
-    return { playGame };
+    return { playGame, currentPlayer };
 })(player1, player2, gameboard);
 
 
