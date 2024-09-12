@@ -1,14 +1,12 @@
-const domElements = (function () {
-    let cell = document.querySelectorAll('.cell');
-    let livePlayer = document.querySelector('.current-player');
-    let scorePlayer1 = document.querySelector('.scoreboard td:first-child');
-    let scorePlayer2 = document.querySelector('.scoreboard td:last-child');
-    let startBtn = document.querySelector('#startBtn');
-    let resetBtn = document.querySelector('#resetBtn');
-    let restartBtn = document.querySelector('#restartBtn');
-
-    return { livePlayer }
-})();
+const domElements = {
+    cell: document.querySelectorAll('.cell'),
+    livePlayer: document.querySelector('.current-player'),
+    scorePlayer1: document.querySelector('.scoreboard td:first-child'),
+    scorePlayer2: document.querySelector('.scoreboard td:last-child'),
+    startBtn: document.querySelector('#startBtn'),
+    resetBtn: document.querySelector('#resetBtn'),
+    restartBtn: document.querySelector('#restartBtn'),
+};
 
 const Gameboard = (function () {
     createGameboard = () => {
@@ -50,11 +48,11 @@ const Player = (function () {
     return { createPlayer };
 })();
 
-const player1 = Player.createPlayer('Hashmi', 'x');
-const player2 = Player.createPlayer('Antonio', 'o');
+const player1 = Player.createPlayer('Player 1', 'x');
+const player2 = Player.createPlayer('Player 2', 'o');
 const gameboard = Gameboard.createGameboard();
 
-const functionGame = (function (player1, player2, gameboard, livePlayer) {
+const functionGame = (function (player1, player2, gameboard) {
 
     let currentPlayer = player1;
     let gameOver = false;
@@ -70,15 +68,14 @@ const functionGame = (function (player1, player2, gameboard, livePlayer) {
 
 
     switchTurn = () => {
-        // currentPlayer = (currentPlayer === player1) ? player2 : player1;
-
+        const { livePlayer } = domElements;
         if (currentPlayer === player1) {
             currentPlayer = player2;
-            livePlayer.textContent = 'Player 2';
+            livePlayer.textContent = 'Current Player: ' + player2.name;
         }
         else {
             currentPlayer = player1;
-            livePlayer.textContent = 'Player 1';
+            livePlayer.textContent = 'Current Player: ' + player1.name;
         }
     }
 
@@ -141,9 +138,6 @@ const functionGame = (function (player1, player2, gameboard, livePlayer) {
 
     return { playGame, currentPlayer };
 })(player1, player2, gameboard);
-
-
-
 
 functionGame.playGame();
 
