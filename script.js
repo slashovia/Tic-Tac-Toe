@@ -1,8 +1,9 @@
 const domElements = {
     cell: document.querySelectorAll('.cell'),
     livePlayer: document.querySelector('.current-player'),
-    scorePlayer1: document.querySelector('.scoreboard td:first-child'),
-    scorePlayer2: document.querySelector('.scoreboard td:last-child'),
+    infoPlayer: document.querySelector('.info'),
+    tHead: document.querySelector('thead tr'),
+    tBody: document.querySelector('tbody tr'),
     startBtn: document.querySelector('#startBtn'),
     resetBtn: document.querySelector('#resetBtn'),
     restartBtn: document.querySelector('#restartBtn'),
@@ -17,13 +18,29 @@ const Gameboard = (function () {
             .map(() => Array(columns).fill(0));
         return matrix;
     };
+
     return { createGameboard }
 })();
 
 const Player = (function () {
     createPlayer = (name, marker) => {
+        const { infoPlayer, tBody, tHead } = domElements;
+
         let score = 0;
-        makeMove = () => {
+
+        const th = document.createElement('th');
+        th.textContent = `${name}`;
+        tHead.appendChild(th);
+
+        const td = document.createElement('td');
+        td.textContent = `${score}`;
+        tBody.appendChild(td);
+
+        const info = document.createElement('p');
+        info.textContent = `Player ${name} with ${marker}`;
+        infoPlayer.appendChild(info);
+
+        const makeMove = () => {
             let validMove = false;
             while (!validMove) {
                 let move = prompt(`${name}, make your move (row and column)!`);
@@ -48,8 +65,8 @@ const Player = (function () {
     return { createPlayer };
 })();
 
-const player1 = Player.createPlayer('Player 1', 'x');
-const player2 = Player.createPlayer('Player 2', 'o');
+const player1 = Player.createPlayer('Hashmi', 'X');
+const player2 = Player.createPlayer('Fabrizio', 'O');
 const gameboard = Gameboard.createGameboard();
 
 const functionGame = (function (player1, player2, gameboard) {
@@ -59,13 +76,8 @@ const functionGame = (function (player1, player2, gameboard) {
 
     increaseScore = player => player.score++;
 
-    showScore = () => {
-        console.log(`${player1.name}: ${player1.score}`);
-        console.log(`${player2.name}: ${player2.score}`);
-    }
 
     showGrid = () => console.log(gameboard);
-
 
     switchTurn = () => {
         const { livePlayer } = domElements;
@@ -127,7 +139,6 @@ const functionGame = (function (player1, player2, gameboard) {
 
     playGame = () => {
         showGrid();
-        showScore();
         while (!gameOver) {
             currentPlayer.makeMove();
             moveChecker();
