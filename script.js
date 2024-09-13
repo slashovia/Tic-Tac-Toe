@@ -1,13 +1,17 @@
-const domElements = {
-    cell: document.querySelectorAll('.cell'),
-    livePlayer: document.querySelector('.current-player'),
-    infoPlayer: document.querySelector('.info'),
-    tHead: document.querySelector('thead tr'),
-    tBody: document.querySelector('tbody tr'),
-    startBtn: document.querySelector('#startBtn'),
-    resetBtn: document.querySelector('#resetBtn'),
-    restartBtn: document.querySelector('#restartBtn'),
-};
+const domElements = (function () {
+    const cell = document.querySelectorAll('.cell');
+    const livePlayer = document.querySelector('.current-player');
+    const infoPlayer = document.querySelector('.info');
+    const tHead = document.querySelector('thead tr');
+    const tBody = document.querySelector('tbody tr');
+    const startBtn = document.querySelector('#startBtn');
+    const resetBtn = document.querySelector('#resetBtn');
+    const restartBtn = document.querySelector('#restartBtn');
+
+    return {
+        cell, livePlayer, infoPlayer, tBody, tHead, startBtn, resetBtn, resetBtn
+    }
+})();
 
 const Gameboard = (function () {
     createGameboard = () => {
