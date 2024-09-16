@@ -6,10 +6,31 @@ const domElements = (function () {
     const tBody = document.querySelector('tbody tr');
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
-    const restartBtn = document.querySelector('#restartBtn');
 
+    const createPlayerElement = (name, marker, score) => {
+        const th = document.createElement('th');
+        th.textContent = `${name}`;
+        tHead.appendChild(th);
+
+        const td = document.createElement('td');
+        td.textContent = `${score}`;
+        tBody.appendChild(td);
+
+        const info = document.createElement('p');
+        info.textContent = `${name}'s marker: ${marker}`;
+        infoPlayer.appendChild(info);
+
+        return td;
+    }
+
+    const updateCurrentPlayerElement = player => {
+        livePlayer.textContent = 'Current Player: ' + player.name;
+    }
+    const updateScorePlayerElement = (player) => {
+        player.scoreElement.textContent = `${player.score}`;
+    }
     return {
-        cell, livePlayer, infoPlayer, tBody, tHead, startBtn, resetBtn, resetBtn
+        cell, livePlayer, infoPlayer, tBody, tHead, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
     }
 })();
 
@@ -27,22 +48,17 @@ const Gameboard = (function () {
 })();
 
 const Player = (function () {
-    createPlayer = (name, marker) => {
-        const { infoPlayer, tBody, tHead } = domElements;
 
+    const createPlayer = (name, marker) => {
         let score = 0;
+        const { createPlayerElement, updateScorePlayerElement } = domElements;
 
-        const th = document.createElement('th');
-        th.textContent = `${name}`;
-        tHead.appendChild(th);
+        const scoreElement = createPlayerElement(name, marker, score);
 
-        const td = document.createElement('td');
-        td.textContent = `${score}`;
-        tBody.appendChild(td);
-
-        const info = document.createElement('p');
-        info.textContent = `Player ${name} with ${marker}`;
-        infoPlayer.appendChild(info);
+        const increaseScore = () => {
+            score++;
+            updateScorePlayerElement({ score, scoreElement });
+        }
 
         const makeMove = () => {
             let validMove = false;
@@ -64,7 +80,8 @@ const Player = (function () {
 
             };
         }
-        return { score, makeMove, name, marker }
+
+        return { score, makeMove, increaseScore, name, marker }
     }
     return { createPlayer };
 })();
@@ -75,40 +92,37 @@ const gameboard = Gameboard.createGameboard();
 
 const functionGame = (function (player1, player2, gameboard) {
 
+    const { startBtn, updateCurrentPlayerElement } = domElements;
     let currentPlayer = player1;
     let gameOver = false;
 
-    increaseScore = player => player.score++;
+    const showGrid = () => console.log(gameboard);
 
-
-    showGrid = () => console.log(gameboard);
-
-    switchTurn = () => {
-        const { livePlayer } = domElements;
+    const switchTurn = () => {
         if (currentPlayer === player1) {
             currentPlayer = player2;
-            livePlayer.textContent = 'Current Player: ' + player2.name;
+            updateCurrentPlayerElement(player2);
         }
         else {
             currentPlayer = player1;
-            livePlayer.textContent = 'Current Player: ' + player1.name;
+            updateCurrentPlayerElement(player1);
         }
     }
 
-    moveChecker = () => {
+    const moveChecker = () => {
 
         //Check rows
         gameboard.forEach(row => {
             if (row.every(cell => cell === player1.marker)) {
                 console.log(`${player1.name} wins!`);
-                increaseScore(player1);
+                player1.increaseScore();
                 return gameOver = true;
 
             }
 
             else if (row.every(cell => cell === player2.marker)) {
                 console.log(`${player2.name} wins!`);
-                increaseScore(player2);
+                player2.increaseScore();
                 return gameOver = true;
             }
         }
@@ -118,12 +132,12 @@ const functionGame = (function (player1, player2, gameboard) {
         for (let i = 0; i < gameboard.length; i++) {
             if (gameboard.every(row => row[i] === player1.marker)) {
                 console.log(`${player1.name} wins!`);
-                increaseScore(player1);
+                player1.increaseScore();
                 return gameOver = true;
             }
             else if (gameboard.every(row => row[i] === player2.marker)) {
                 console.log(`${player2.name} wins!`);
-                increaseScore(player2);
+                player2.increaseScore();
                 return gameOver = true;
             }
         }
@@ -131,18 +145,19 @@ const functionGame = (function (player1, player2, gameboard) {
         // Check diagonals
         if ((gameboard[0][0] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][2] === player1.marker) || (gameboard[0][2] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][0] === player1.marker)) {
             console.log(`${player1.name} wins!`);
-            increaseScore(player1);
+            player1.increaseScore();
             return gameOver = true;
         }
         else if ((gameboard[0][0] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][2] === player2.marker) || (gameboard[0][2] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][0] === player2.marker)) {
             console.log(`${player2.name} wins!`);
-            increaseScore(player2);
+            player2.increaseScore();
             return gameOver = true;
         }
     }
 
-    playGame = () => {
+    const playGame = () => {
         showGrid();
+        gameOver = false;
         while (!gameOver) {
             currentPlayer.makeMove();
             moveChecker();
@@ -150,11 +165,9 @@ const functionGame = (function (player1, player2, gameboard) {
         }
     };
 
+    startBtn.addEventListener('click', playGame);
 
-    return { playGame, currentPlayer };
 })(player1, player2, gameboard);
-
-functionGame.playGame();
 
 
 
