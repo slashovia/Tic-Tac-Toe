@@ -51,6 +51,7 @@ const Player = (function () {
 
     const createPlayer = (name, marker) => {
         let score = 0;
+
         const { createPlayerElement, updateScorePlayerElement } = domElements;
 
         const scoreElement = createPlayerElement(name, marker, score);
@@ -93,6 +94,7 @@ const gameboard = Gameboard.createGameboard();
 const functionGame = (function (player1, player2, gameboard) {
 
     const { startBtn, updateCurrentPlayerElement } = domElements;
+    const { createGameboard } = Gameboard;
     let currentPlayer = player1;
     let gameOver = false;
 
@@ -109,6 +111,12 @@ const functionGame = (function (player1, player2, gameboard) {
         }
     }
 
+    const resetRound = () => {
+        currentPlayer = player1;
+        gameboard = createGameboard();
+        return gameOver = true;
+    }
+
     const moveChecker = () => {
 
         //Check rows
@@ -116,14 +124,14 @@ const functionGame = (function (player1, player2, gameboard) {
             if (row.every(cell => cell === player1.marker)) {
                 console.log(`${player1.name} wins!`);
                 player1.increaseScore();
-                return gameOver = true;
+                resetRound();
 
             }
 
             else if (row.every(cell => cell === player2.marker)) {
                 console.log(`${player2.name} wins!`);
                 player2.increaseScore();
-                return gameOver = true;
+                resetRound();
             }
         }
         );
@@ -133,12 +141,12 @@ const functionGame = (function (player1, player2, gameboard) {
             if (gameboard.every(row => row[i] === player1.marker)) {
                 console.log(`${player1.name} wins!`);
                 player1.increaseScore();
-                return gameOver = true;
+                resetRound();
             }
             else if (gameboard.every(row => row[i] === player2.marker)) {
                 console.log(`${player2.name} wins!`);
                 player2.increaseScore();
-                return gameOver = true;
+                resetRound();
             }
         }
 
@@ -146,12 +154,12 @@ const functionGame = (function (player1, player2, gameboard) {
         if ((gameboard[0][0] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][2] === player1.marker) || (gameboard[0][2] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][0] === player1.marker)) {
             console.log(`${player1.name} wins!`);
             player1.increaseScore();
-            return gameOver = true;
+            resetRound();
         }
         else if ((gameboard[0][0] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][2] === player2.marker) || (gameboard[0][2] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][0] === player2.marker)) {
             console.log(`${player2.name} wins!`);
             player2.increaseScore();
-            return gameOver = true;
+            resetRound();
         }
     }
 
@@ -164,6 +172,7 @@ const functionGame = (function (player1, player2, gameboard) {
             switchTurn();
         }
     };
+
 
     startBtn.addEventListener('click', playGame);
 
