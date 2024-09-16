@@ -30,7 +30,7 @@ const domElements = (function () {
         player.scoreElement.textContent = `${player.score}`;
     }
     return {
-        cell, livePlayer, infoPlayer, tBody, tHead, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
+        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
     }
 })();
 
@@ -61,6 +61,10 @@ const Player = (function () {
             updateScorePlayerElement({ score, scoreElement });
         }
 
+        const resetScore = () => {
+            score = 0;
+            updateScorePlayerElement({ score, scoreElement });
+        }
         const makeMove = () => {
             let validMove = false;
             while (!validMove) {
@@ -82,7 +86,7 @@ const Player = (function () {
             };
         }
 
-        return { score, makeMove, increaseScore, name, marker }
+        return { score, makeMove, increaseScore, resetScore, name, marker }
     }
     return { createPlayer };
 })();
@@ -93,7 +97,7 @@ const gameboard = Gameboard.createGameboard();
 
 const functionGame = (function (player1, player2, gameboard) {
 
-    const { startBtn, updateCurrentPlayerElement } = domElements;
+    const { startBtn, resetBtn, updateCurrentPlayerElement } = domElements;
     const { createGameboard } = Gameboard;
     let currentPlayer = player1;
     let gameOver = false;
@@ -115,6 +119,12 @@ const functionGame = (function (player1, player2, gameboard) {
         currentPlayer = player1;
         gameboard = createGameboard();
         return gameOver = true;
+    }
+
+    const resetGame = () => {
+        resetRound();
+        player1.resetScore();
+        player2.resetScore();
     }
 
     const moveChecker = () => {
@@ -173,8 +183,8 @@ const functionGame = (function (player1, player2, gameboard) {
         }
     };
 
-
     startBtn.addEventListener('click', playGame);
+    resetBtn.addEventListener('click', resetGame);
 
 })(player1, player2, gameboard);
 
