@@ -7,7 +7,9 @@ const domElements = (function () {
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
 
+
     const createPlayerElement = (name, marker, score) => {
+
         const th = document.createElement('th');
         th.textContent = `${name}`;
         tHead.appendChild(th);
@@ -36,7 +38,7 @@ const domElements = (function () {
     }
 })();
 
-const Player = (function () {
+const player = (function () {
 
     const { createPlayerElement } = domElements;
 
@@ -68,35 +70,47 @@ const functionGame = (function () {
     }
 
     const initializePlayer = () => {
-        player1 = Player.createPlayer('Hashmi', 'X');
-        player2 = Player.createPlayer('Fabrizio', 'O');
+        player1 = player.createPlayer('Hashmi', 'X');
+        player2 = player.createPlayer('Fabrizio', 'O');
         currentPlayer = player1;
+        updateCurrentPlayerElement(currentPlayer);
     }
 
     const resetRound = () => {
         currentPlayer = player1;
-        cell.forEach(c => c.textContent = '');
+        updateCurrentPlayerElement(currentPlayer);
+        cell.forEach(c => c.textContent = ''
+        );
+        makeMove();
     }
 
     const resetGame = () => {
+        cell.forEach(c =>
+            c.removeEventListener('click', moveListener)
+        )
         resetRound();
         resetScore(player1);
         resetScore(player2);
+        makeMove();
     }
 
     const makeMove = () => {
-        cell.forEach(c =>
-            c.addEventListener('click', function () {
-                if (this.textContent === '') {
-                    this.textContent = currentPlayer.marker;
-                    moveChecker();
-                    switchTurn();
-                }
-                else {
-                    alert('Warning, move not allowed. Try again.');
-                }
-            }))
+        cell.forEach(c => {
+            c.removeEventListener('click', moveListener);
+            c.addEventListener('click', moveListener)
+        })
     };
+
+    const moveListener = function () {
+        if (this.textContent === '') {
+            this.textContent = currentPlayer.marker;
+            moveChecker();
+            switchTurn();
+        }
+        else {
+            alert('Warning, move not allowed. Try again.');
+        }
+    }
 
     const moveChecker = () => {
         const winConditions =
@@ -119,26 +133,19 @@ const functionGame = (function () {
     const switchTurn = () => {
         if (currentPlayer === player1) {
             currentPlayer = player2;
-            updateCurrentPlayerElement(player2);
+            updateCurrentPlayerElement(currentPlayer);
         }
         else {
             currentPlayer = player1;
-            updateCurrentPlayerElement(player1);
+            updateCurrentPlayerElement(currentPlayer);
         }
     }
 
-    const playGame = () => {
-        initializePlayer();
-        makeMove();
-    }
-
-    startBtn.addEventListener('click', playGame);
+    startBtn.addEventListener('click', makeMove);
     resetBtn.addEventListener('click', resetGame);
+
+    initializePlayer();
 })();
-
-
-
-
 
 
 
