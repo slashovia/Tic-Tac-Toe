@@ -1,4 +1,3 @@
-
 const domElements = (function () {
     const cell = document.querySelectorAll('.cell');
     const livePlayer = document.querySelector('.current-player');
@@ -28,7 +27,7 @@ const domElements = (function () {
         livePlayer.textContent = 'Current Player: ' + player.name;
     }
 
-    const updateScorePlayerElement = (player) => {
+    const updateScorePlayerElement = player => {
         player.scoreElement.textContent = player.score;
     }
 
@@ -39,36 +38,34 @@ const domElements = (function () {
 
 const Player = (function () {
 
-    const { createPlayerElement, updateScorePlayerElement } = domElements;
+    const { createPlayerElement } = domElements;
 
     const createPlayer = (name, marker) => {
         let score = 0;
         const scoreElement = createPlayerElement(name, marker, score);
 
-        const increaseScore = () => {
-            score++;
-            updateScorePlayerElement({ score, scoreElement });
-        }
-
-        const resetScore = () => {
-            score = 0;
-            updateScorePlayerElement({ score, scoreElement });
-        }
-
         return {
-            name, marker, increaseScore, resetScore
+            name, marker, scoreElement, score
         }
     }
-
 
     return { createPlayer };
 })();
 
-
 const functionGame = (function () {
 
-    const { cell, startBtn, resetBtn, updateCurrentPlayerElement } = domElements;
+    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement } = domElements;
     let player1, player2, currentPlayer;
+
+    const increaseScore = player => {
+        player.score++;
+        updateScorePlayerElement(player);
+    }
+
+    const resetScore = player => {
+        player.score = 0;
+        updateScorePlayerElement(player)
+    }
 
     const initializePlayer = () => {
         player1 = Player.createPlayer('Hashmi', 'X');
@@ -83,8 +80,8 @@ const functionGame = (function () {
 
     const resetGame = () => {
         resetRound();
-        player1.resetScore();
-        player2.resetScore();
+        resetScore(player1);
+        resetScore(player2);
     }
 
     const makeMove = () => {
@@ -113,7 +110,7 @@ const functionGame = (function () {
                 cell[a].textContent === currentPlayer.marker
             ) {
                 alert(`${currentPlayer.name} wins!`);
-                currentPlayer.increaseScore();
+                increaseScore(currentPlayer);
                 resetRound();
             }
         })
