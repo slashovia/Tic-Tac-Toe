@@ -11,11 +11,11 @@ const domElements = (function () {
     const createPlayerElement = (name, marker, score) => {
 
         const th = document.createElement('th');
-        th.textContent = `${name}`;
+        th.textContent = name;
         tHead.appendChild(th);
 
         const td = document.createElement('td');
-        td.textContent = `${score}`;
+        td.textContent = score;
         tBody.appendChild(td);
 
         const info = document.createElement('p');
@@ -26,7 +26,7 @@ const domElements = (function () {
     }
 
     const updateCurrentPlayerElement = player => {
-        livePlayer.textContent = 'Current Player: ' + player.name;
+        livePlayer.textContent = `Current Player: ${player.name}`;
     }
 
     const updateScorePlayerElement = player => {
@@ -57,7 +57,7 @@ const player = (function () {
 const functionGame = (function () {
 
     const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement } = domElements;
-    let player1, player2, currentPlayer;
+    let player1, player2, currentPlayer, currentPlayerRound;
 
     const increaseScore = player => {
         player.score++;
@@ -72,23 +72,24 @@ const functionGame = (function () {
     const initializePlayer = () => {
         player1 = player.createPlayer('Hashmi', 'X');
         player2 = player.createPlayer('Fabrizio', 'O');
+        currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
     }
 
     const resetRound = () => {
-        currentPlayer = player1;
-        updateCurrentPlayerElement(currentPlayer);
+        switchTurnRound();
         cell.forEach(c => c.textContent = ''
         );
         makeMove();
     }
 
     const resetGame = () => {
-        cell.forEach(c =>
-            c.removeEventListener('click', moveListener)
-        )
-        resetRound();
+        currentPlayerRound = player1;
+        currentPlayer = player1;
+        updateCurrentPlayerElement(currentPlayer);
+        cell.forEach(c => c.textContent = ''
+        );
         resetScore(player1);
         resetScore(player2);
         makeMove();
@@ -138,6 +139,17 @@ const functionGame = (function () {
         else {
             currentPlayer = player1;
             updateCurrentPlayerElement(currentPlayer);
+        }
+    }
+
+    const switchTurnRound = () => {
+        if (currentPlayerRound === player1) {
+            currentPlayerRound = player2;
+            updateCurrentPlayerElement(currentPlayerRound);
+        }
+        else {
+            currentPlayerRound = player1;
+            updateCurrentPlayerElement(currentPlayerRound);
         }
     }
 
