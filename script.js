@@ -114,6 +114,8 @@ const functionGame = (function () {
     }
 
     const moveChecker = () => {
+        let winner = false;
+
         const winConditions =
             [[0, 1, 2], [3, 4, 5], [6, 7, 8], //Check Rows
             [0, 3, 6], [1, 4, 7], [2, 5, 8], //Check columns
@@ -127,9 +129,26 @@ const functionGame = (function () {
                 alert(`${currentPlayer.name} wins!`);
                 increaseScore(currentPlayer);
                 resetRound();
+                winner = true;
             }
+
         })
+
+        //Check for tie
+        if (!winner) {
+            let allFilled = true;
+            cell.forEach(c => {
+                if (c.textContent === '') {
+                    allFilled = false;
+                }
+            });
+            if (allFilled) {
+                alert(`It's a tie!`);
+                resetRound();
+            }
+        }
     }
+
 
     const switchTurn = () => {
         if (currentPlayer === player1) {
@@ -157,6 +176,7 @@ const functionGame = (function () {
     resetBtn.addEventListener('click', resetGame);
 
     initializePlayer();
+
 })();
 
 
