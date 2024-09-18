@@ -9,11 +9,11 @@ const domElements = (function () {
 
     const createPlayerElement = (name, marker, score) => {
         const th = document.createElement('th');
-        th.textContent = `${name}`;
+        th.textContent = name;
         tHead.appendChild(th);
 
         const td = document.createElement('td');
-        td.textContent = `${score}`;
+        td.textContent = score;
         tBody.appendChild(td);
 
         const info = document.createElement('p');
@@ -24,173 +24,147 @@ const domElements = (function () {
     }
 
     const updateCurrentPlayerElement = player => {
-        livePlayer.textContent = 'Current Player: ' + player.name;
+        livePlayer.textContent = `Current Player: ${player.name}`;
     }
-    const updateScorePlayerElement = (player) => {
-        player.scoreElement.textContent = `${player.score}`;
+
+    const updateScorePlayerElement = player => {
+        player.scoreElement.textContent = player.score;
     }
+
     return {
         cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
     }
 })();
 
-const Gameboard = (function () {
-    createGameboard = () => {
-        const rows = 3;
-        const columns = 3;
-        const matrix = Array(rows)
-            .fill()
-            .map(() => Array(columns).fill(0));
-        return matrix;
-    };
-
-    return { createGameboard }
-})();
-
-const Player = (function () {
+const player = (function () {
+    const { createPlayerElement } = domElements;
 
     const createPlayer = (name, marker) => {
         let score = 0;
-
-        const { createPlayerElement, updateScorePlayerElement } = domElements;
-
         const scoreElement = createPlayerElement(name, marker, score);
 
-        const increaseScore = () => {
-            score++;
-            updateScorePlayerElement({ score, scoreElement });
+        return {
+            name, marker, scoreElement, score
         }
-
-        const resetScore = () => {
-            score = 0;
-            updateScorePlayerElement({ score, scoreElement });
-        }
-        const makeMove = () => {
-            let validMove = false;
-            while (!validMove) {
-                let move = prompt(`${name}, make your move (row and column)!`);
-                let fixMove = move.split('').map(Number);
-                if (fixMove.length === 2 &&
-                    fixMove[0] >= 0 && fixMove[0] <= 2 &&
-                    fixMove[1] >= 0 && fixMove[1] <= 2 &&
-                    gameboard[fixMove[0]][fixMove[1]] === 0) {
-
-                    gameboard[fixMove[0]][fixMove[1]] = marker;
-                    validMove = true;
-
-                }
-                else {
-                    alert('Warning, move not allowed. Try again.');
-                }
-
-            };
-        }
-
-        return { score, makeMove, increaseScore, resetScore, name, marker }
     }
+
     return { createPlayer };
 })();
 
-const player1 = Player.createPlayer('Hashmi', 'X');
-const player2 = Player.createPlayer('Fabrizio', 'O');
-const gameboard = Gameboard.createGameboard();
+const functionGame = (function () {
+    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement } = domElements;
+    let player1, player2, currentPlayer, currentPlayerRound;
 
-const functionGame = (function (player1, player2, gameboard) {
+    const increaseScore = player => {
+        player.score++;
+        updateScorePlayerElement(player);
+    }
 
-    const { startBtn, resetBtn, updateCurrentPlayerElement } = domElements;
-    const { createGameboard } = Gameboard;
-    let currentPlayer = player1;
-    let gameOver = false;
+    const resetScore = player => {
+        player.score = 0;
+        updateScorePlayerElement(player);
+    }
 
-    const showGrid = () => console.log(gameboard);
+    const initializePlayer = () => {
+        player1 = player.createPlayer('Hashmi', 'X');
+        player2 = player.createPlayer('Fabrizio', 'O');
+        currentPlayerRound = player1;
+        currentPlayer = player1;
+        updateCurrentPlayerElement(currentPlayer);
+        makeMove();
+    }
+
+    const resetRound = () => {
+        switchTurnRound(); // Switch player turn for the next round
+        cell.forEach(c => c.textContent = '');
+        makeMove(); // Reattach event listeners
+    }
+
+    const resetGame = () => {
+        // Set the starting player for a new game
+        currentPlayerRound = player1; // Start with player1
+        currentPlayer = player1;
+        updateCurrentPlayerElement(currentPlayer);
+        cell.forEach(c => c.textContent = '');
+        resetScore(player1);
+        resetScore(player2);
+        makeMove(); // Reattach event listeners
+    }
+
+    const makeMove = () => {
+        cell.forEach(c => {
+            c.removeEventListener('click', moveListener);
+            c.addEventListener('click', moveListener);
+        });
+    };
+
+    const moveListener = function () {
+        if (this.textContent === '') {
+            this.textContent = currentPlayer.marker;
+            moveChecker();
+        } else {
+            alert('Warning, move not allowed. Try again.');
+        }
+    }
+
+    const moveChecker = () => {
+        const winConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
+
+        let winner = false;
+
+        winConditions.forEach(([a, b, c]) => {
+            if (cell[a].textContent &&
+                cell[a].textContent === cell[b].textContent &&
+                cell[a].textContent === cell[c].textContent) {
+                winner = true;
+
+                setTimeout(() => {
+                    alert(`${currentPlayer.name} wins!`);
+                    increaseScore(currentPlayer);
+                    resetRound();
+                }, 50);
+            }
+        });
+
+        // Check for tie
+        if (!winner) {
+            const allFilled = Array.from(cell).every(c => c.textContent);
+            if (allFilled) {
+                setTimeout(() => {
+                    alert(`It's a tie!`);
+                    resetRound();
+                }, 50);
+            } else {
+                switchTurn(); // Only switch turns if there is no tie or winner
+            }
+        }
+    }
 
     const switchTurn = () => {
         if (currentPlayer === player1) {
             currentPlayer = player2;
-            updateCurrentPlayerElement(player2);
-        }
-        else {
+        } else {
             currentPlayer = player1;
-            updateCurrentPlayerElement(player1);
         }
+        updateCurrentPlayerElement(currentPlayer);
     }
 
-    const resetRound = () => {
-        currentPlayer = player1;
-        gameboard = createGameboard();
-        return gameOver = true;
+    const switchTurnRound = () => {
+        if (currentPlayerRound === player1) {
+            currentPlayerRound = player2;
+        } else {
+            currentPlayerRound = player1;
+        }
+        currentPlayer = currentPlayerRound; // Ensure current player is updated for the new round
+        updateCurrentPlayerElement(currentPlayer);
     }
 
-    const resetGame = () => {
-        resetRound();
-        player1.resetScore();
-        player2.resetScore();
-    }
-
-    const moveChecker = () => {
-
-        //Check rows
-        gameboard.forEach(row => {
-            if (row.every(cell => cell === player1.marker)) {
-                console.log(`${player1.name} wins!`);
-                player1.increaseScore();
-                resetRound();
-
-            }
-
-            else if (row.every(cell => cell === player2.marker)) {
-                console.log(`${player2.name} wins!`);
-                player2.increaseScore();
-                resetRound();
-            }
-        }
-        );
-
-        //Check columns
-        for (let i = 0; i < gameboard.length; i++) {
-            if (gameboard.every(row => row[i] === player1.marker)) {
-                console.log(`${player1.name} wins!`);
-                player1.increaseScore();
-                resetRound();
-            }
-            else if (gameboard.every(row => row[i] === player2.marker)) {
-                console.log(`${player2.name} wins!`);
-                player2.increaseScore();
-                resetRound();
-            }
-        }
-
-        // Check diagonals
-        if ((gameboard[0][0] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][2] === player1.marker) || (gameboard[0][2] === player1.marker && gameboard[1][1] === player1.marker && gameboard[2][0] === player1.marker)) {
-            console.log(`${player1.name} wins!`);
-            player1.increaseScore();
-            resetRound();
-        }
-        else if ((gameboard[0][0] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][2] === player2.marker) || (gameboard[0][2] === player2.marker && gameboard[1][1] === player2.marker && gameboard[2][0] === player2.marker)) {
-            console.log(`${player2.name} wins!`);
-            player2.increaseScore();
-            resetRound();
-        }
-    }
-
-    const playGame = () => {
-        showGrid();
-        gameOver = false;
-        while (!gameOver) {
-            currentPlayer.makeMove();
-            moveChecker();
-            switchTurn();
-        }
-    };
-
-    startBtn.addEventListener('click', playGame);
+    startBtn.addEventListener('click', makeMove);
     resetBtn.addEventListener('click', resetGame);
 
-})(player1, player2, gameboard);
-
-
-
-
-
-
-
+    initializePlayer();
+})();
