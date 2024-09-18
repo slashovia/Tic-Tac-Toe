@@ -55,7 +55,6 @@ const player = (function () {
 })();
 
 const functionGame = (function () {
-
     const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement } = domElements;
     let player1, player2, currentPlayer, currentPlayerRound;
 
@@ -66,118 +65,113 @@ const functionGame = (function () {
 
     const resetScore = player => {
         player.score = 0;
-        updateScorePlayerElement(player)
+        updateScorePlayerElement(player);
     }
 
     const initializePlayer = () => {
         player1 = player.createPlayer('Hashmi', 'X');
         player2 = player.createPlayer('Fabrizio', 'O');
-        currentPlayerRound = player1;
+        currentPlayerRound = player1; // Player1 starts the first round
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
+        makeMove();
     }
 
     const resetRound = () => {
-        switchTurnRound();
-        cell.forEach(c => c.textContent = ''
-        );
-        makeMove();
+        switchTurnRound(); // Switch player turn for the next round
+        cell.forEach(c => c.textContent = '');
+        makeMove(); // Reattach event listeners
     }
 
     const resetGame = () => {
-        currentPlayerRound = player1;
+        // Set the starting player for a new game
+        currentPlayerRound = player1; // Player1 starts the new game
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
-        cell.forEach(c => c.textContent = ''
-        );
+        cell.forEach(c => c.textContent = '');
         resetScore(player1);
         resetScore(player2);
-        makeMove();
+        makeMove(); // Reattach event listeners
     }
 
     const makeMove = () => {
         cell.forEach(c => {
             c.removeEventListener('click', moveListener);
-            c.addEventListener('click', moveListener)
-        })
+            c.addEventListener('click', moveListener);
+        });
     };
 
     const moveListener = function () {
         if (this.textContent === '') {
             this.textContent = currentPlayer.marker;
             moveChecker();
-            switchTurn();
-        }
-        else {
+        } else {
             alert('Warning, move not allowed. Try again.');
         }
     }
 
     const moveChecker = () => {
+        const winConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
+
         let winner = false;
 
-        const winConditions =
-            [[0, 1, 2], [3, 4, 5], [6, 7, 8], //Check Rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], //Check columns
-            [0, 4, 8], [2, 4, 6]] //Check Diagonals
-
         winConditions.forEach(([a, b, c]) => {
-            if (cell[a].textContent === cell[b].textContent &&
-                cell[a].textContent === cell[c].textContent &&
-                cell[a].textContent === currentPlayer.marker
-            ) {
-                alert(`${currentPlayer.name} wins!`);
-                increaseScore(currentPlayer);
-                resetRound();
+            if (cell[a].textContent &&
+                cell[a].textContent === cell[b].textContent &&
+                cell[a].textContent === cell[c].textContent) {
                 winner = true;
+
+                setTimeout(() => {
+                    alert(`${currentPlayer.name} wins!`);
+                    increaseScore(currentPlayer);
+                    resetRound();
+                }, 50);
             }
+        });
 
-        })
-
-        //Check for tie
+        // Check for tie
         if (!winner) {
-            let allFilled = true;
-            cell.forEach(c => {
-                if (c.textContent === '') {
-                    allFilled = false;
-                }
-            });
+            const allFilled = Array.from(cell).every(c => c.textContent);
             if (allFilled) {
-                alert(`It's a tie!`);
-                resetRound();
+                setTimeout(() => {
+                    alert(`It's a tie!`);
+                    resetRound();
+                }, 50);
+            } else {
+                switchTurn(); // Only switch turns if there is no tie or winner
             }
         }
     }
 
-
     const switchTurn = () => {
         if (currentPlayer === player1) {
             currentPlayer = player2;
-            updateCurrentPlayerElement(currentPlayer);
-        }
-        else {
+        } else {
             currentPlayer = player1;
-            updateCurrentPlayerElement(currentPlayer);
         }
+        updateCurrentPlayerElement(currentPlayer);
     }
 
     const switchTurnRound = () => {
         if (currentPlayerRound === player1) {
             currentPlayerRound = player2;
-            updateCurrentPlayerElement(currentPlayerRound);
-        }
-        else {
+        } else {
             currentPlayerRound = player1;
-            updateCurrentPlayerElement(currentPlayerRound);
         }
+        currentPlayer = currentPlayerRound; // Ensure current player is updated for the new round
+        updateCurrentPlayerElement(currentPlayer);
     }
 
     startBtn.addEventListener('click', makeMove);
     resetBtn.addEventListener('click', resetGame);
 
     initializePlayer();
-
 })();
+
 
 
 
