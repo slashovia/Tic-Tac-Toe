@@ -18,21 +18,42 @@ const domElements = (function () {
         td.textContent = score;
         tBody.appendChild(td);
 
-        const info = document.createElement('p');
-        info.textContent = `${name}'s marker: ${marker}`;
-        infoPlayer.appendChild(info);
+        const infoName = document.createElement('p');
+        infoName.textContent = `${name}'s marker: `;
+        infoPlayer.appendChild(infoName);
+
+        const infoMarker = document.createElement('span');
+        infoMarker.textContent = marker;
+        infoName.appendChild(infoMarker);
 
         return td;
     }
 
     const updateCurrentPlayerElement = player => {
-        livePlayer.textContent = `Current Player: ${player.name}`;
+        livePlayer.textContent = `Current Player: `;
+
+        const currentPlayerName = document.createElement('span');
+        currentPlayerName.textContent = player.name;
+        livePlayer.appendChild(currentPlayerName);
     }
 
     const updateScorePlayerElement = player => {
         player.scoreElement.textContent = player.score;
     }
 
+    cell.forEach(function (cellElement) {
+        cellElement.addEventListener('mouseover', function () {
+            if (this.textContent === '') {
+                this.style.border = '5px solid limegreen';
+            }
+            else {
+                this.style.border = '5px solid tomato';
+            }
+        })
+        cellElement.addEventListener('mouseout', function () {
+            this.style.border = '';
+        })
+    });
     return {
         cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
     }
