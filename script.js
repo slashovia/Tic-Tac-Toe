@@ -7,7 +7,9 @@ const domElements = (function () {
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
 
+
     const createPlayerElement = (name, marker, score) => {
+
         const th = document.createElement('th');
         th.textContent = name;
         tHead.appendChild(th);
@@ -37,6 +39,10 @@ const domElements = (function () {
 })();
 
 const player = (function () {
+<<<<<<< HEAD
+=======
+
+>>>>>>> test
     const { createPlayerElement } = domElements;
 
     const createPlayer = (name, marker) => {
@@ -75,6 +81,7 @@ const functionGame = (function () {
     }
 
     const resetRound = () => {
+<<<<<<< HEAD
         switchTurnRound(); // Switch player turn for the next round
         cell.forEach(c => c.textContent = '');
         makeMove(); // Reattach event listeners
@@ -83,12 +90,25 @@ const functionGame = (function () {
     const resetGame = () => {
         // Set the starting player for a new game
         currentPlayerRound = player1; // Start with player1
+=======
+        switchTurnRound();
+        cell.forEach(c => c.textContent = '');
+        makeMove();
+    }
+
+    const resetGame = () => {
+        currentPlayerRound = player1;
+>>>>>>> test
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
         cell.forEach(c => c.textContent = '');
         resetScore(player1);
         resetScore(player2);
+<<<<<<< HEAD
         makeMove(); // Reattach event listeners
+=======
+        makeMove();
+>>>>>>> test
     }
 
     const makeMove = () => {
@@ -159,7 +179,11 @@ const functionGame = (function () {
         } else {
             currentPlayerRound = player1;
         }
+<<<<<<< HEAD
         currentPlayer = currentPlayerRound; // Ensure current player is updated for the new round
+=======
+        currentPlayer = currentPlayerRound;
+>>>>>>> test
         updateCurrentPlayerElement(currentPlayer);
     }
 
@@ -168,3 +192,19 @@ const functionGame = (function () {
 
     initializePlayer();
 })();
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> test
