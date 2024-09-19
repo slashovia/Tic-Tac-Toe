@@ -39,7 +39,6 @@ const domElements = (function () {
 })();
 
 const player = (function () {
-
     const { createPlayerElement } = domElements;
 
     const createPlayer = (name, marker) => {
@@ -170,16 +169,3 @@ const functionGame = (function () {
 
     initializePlayer();
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
