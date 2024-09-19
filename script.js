@@ -39,10 +39,6 @@ const domElements = (function () {
 })();
 
 const player = (function () {
-<<<<<<< HEAD
-=======
-
->>>>>>> test
     const { createPlayerElement } = domElements;
 
     const createPlayer = (name, marker) => {
@@ -192,19 +188,3 @@ const functionGame = (function () {
 
     initializePlayer();
 })();
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> test
