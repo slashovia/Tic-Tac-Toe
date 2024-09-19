@@ -77,16 +77,6 @@ const functionGame = (function () {
     }
 
     const resetRound = () => {
-<<<<<<< HEAD
-        switchTurnRound(); // Switch player turn for the next round
-        cell.forEach(c => c.textContent = '');
-        makeMove(); // Reattach event listeners
-    }
-
-    const resetGame = () => {
-        // Set the starting player for a new game
-        currentPlayerRound = player1; // Start with player1
-=======
         switchTurnRound();
         cell.forEach(c => c.textContent = '');
         makeMove();
@@ -94,17 +84,12 @@ const functionGame = (function () {
 
     const resetGame = () => {
         currentPlayerRound = player1;
->>>>>>> test
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
         cell.forEach(c => c.textContent = '');
         resetScore(player1);
         resetScore(player2);
-<<<<<<< HEAD
-        makeMove(); // Reattach event listeners
-=======
         makeMove();
->>>>>>> test
     }
 
     const makeMove = () => {
@@ -175,11 +160,7 @@ const functionGame = (function () {
         } else {
             currentPlayerRound = player1;
         }
-<<<<<<< HEAD
-        currentPlayer = currentPlayerRound; // Ensure current player is updated for the new round
-=======
         currentPlayer = currentPlayerRound;
->>>>>>> test
         updateCurrentPlayerElement(currentPlayer);
     }
 
