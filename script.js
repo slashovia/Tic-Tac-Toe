@@ -71,27 +71,26 @@ const functionGame = (function () {
     const initializePlayer = () => {
         player1 = player.createPlayer('Hashmi', 'X');
         player2 = player.createPlayer('Fabrizio', 'O');
-        currentPlayerRound = player1; // Player1 starts the first round
+        currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
         makeMove();
     }
 
     const resetRound = () => {
-        switchTurnRound(); // Switch player turn for the next round
+        switchTurnRound();
         cell.forEach(c => c.textContent = '');
-        makeMove(); // Reattach event listeners
+        makeMove();
     }
 
     const resetGame = () => {
-        // Set the starting player for a new game
-        currentPlayerRound = player1; // Player1 starts the new game
+        currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
         cell.forEach(c => c.textContent = '');
         resetScore(player1);
         resetScore(player2);
-        makeMove(); // Reattach event listeners
+        makeMove();
     }
 
     const makeMove = () => {
@@ -162,7 +161,7 @@ const functionGame = (function () {
         } else {
             currentPlayerRound = player1;
         }
-        currentPlayer = currentPlayerRound; // Ensure current player is updated for the new round
+        currentPlayer = currentPlayerRound;
         updateCurrentPlayerElement(currentPlayer);
     }
 
