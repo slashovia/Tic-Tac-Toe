@@ -21,6 +21,14 @@ input {
 
 .info {
     grid-area: info;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    & .current-player span {
+        font-weight: bold;
+    }
 }
 
 
@@ -55,6 +63,15 @@ input {
 .scoreboard {
     grid-area: scoreboard;
     justify-self: center;
+
+    & td {
+        font-size: 1.5em;
+        font-weight: 600;
+    }
+
+    & th {
+        font-weight: 400;
+    }
 }
 
 table {
