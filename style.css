@@ -26,7 +26,7 @@ input {
     flex-direction: column;
     gap: 1em;
 
-    & .current-player span {
+    & span {
         font-weight: bold;
     }
 }
