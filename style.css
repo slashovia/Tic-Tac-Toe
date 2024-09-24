@@ -21,7 +21,6 @@ input {
 
 .info {
     grid-area: info;
-    align-self: center;
     display: flex;
     flex-direction: column;
     gap: 1em;
