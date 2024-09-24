@@ -41,21 +41,42 @@ const domElements = (function () {
         player.scoreElement.textContent = player.score;
     }
 
-    cell.forEach(function (cellElement) {
-        cellElement.addEventListener('mouseover', function () {
-            if (this.textContent === '') {
-                this.style.border = '5px solid limegreen';
-            }
-            else {
-                this.style.border = '5px solid tomato';
-            }
+    const mouseIn = function () {
+        if (this.textContent === '') {
+            this.style.border = '5px solid limegreen';
+        }
+        else {
+            this.style.border = '5px solid tomato';
+        }
+    };
+
+    const mouseOut = function () {
+        this.style.border = '';
+    };
+
+
+    const removeHoverEvents = () => {
+        cell.forEach(c => {
+            c.removeEventListener('mouseover', mouseIn)
+            c.removeEventListener('mouseout', mouseOut)
+            c.style.border = '';
         })
-        cellElement.addEventListener('mouseout', function () {
-            this.style.border = '';
+    }
+    const winnerCells = ([a, b, c]) => {
+        cell[a].style.backgroundColor = 'yellow';
+        cell[b].style.backgroundColor = 'yellow';
+        cell[c].style.backgroundColor = 'yellow';
+    }
+
+    const resetCells = () => {
+        cell.forEach(c => {
+            c.textContent = '';
+            c.style.backgroundColor = '';
+            c.style.border = '';
         })
-    });
+    }
     return {
-        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
+        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseIn, mouseOut, winnerCells, resetCells, removeHoverEvents
     }
 })();
 
@@ -75,7 +96,7 @@ const player = (function () {
 })();
 
 const functionGame = (function () {
-    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement } = domElements;
+    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement, mouseIn, mouseOut, winnerCells, resetCells, removeHoverEvents } = domElements;
     let player1, player2, currentPlayer, currentPlayerRound;
 
     const increaseScore = player => {
@@ -99,7 +120,7 @@ const functionGame = (function () {
 
     const resetRound = () => {
         switchTurnRound();
-        cell.forEach(c => c.textContent = '');
+        resetCells()
         makeMove();
     }
 
@@ -107,7 +128,7 @@ const functionGame = (function () {
         currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
-        cell.forEach(c => c.textContent = '');
+        resetCells();
         resetScore(player1);
         resetScore(player2);
         makeMove();
@@ -117,6 +138,8 @@ const functionGame = (function () {
         cell.forEach(c => {
             c.removeEventListener('click', moveListener);
             c.addEventListener('click', moveListener);
+            c.addEventListener('mouseover', mouseIn);
+            c.addEventListener('mouseout', mouseOut);
         });
     };
 
@@ -143,6 +166,8 @@ const functionGame = (function () {
                 cell[a].textContent === cell[b].textContent &&
                 cell[a].textContent === cell[c].textContent) {
                 winner = true;
+                removeHoverEvents();
+                winnerCells([a, b, c]);
 
                 setTimeout(() => {
                     alert(`${currentPlayer.name} wins!`);
@@ -156,6 +181,7 @@ const functionGame = (function () {
         if (!winner) {
             const allFilled = Array.from(cell).every(c => c.textContent);
             if (allFilled) {
+                removeHoverEvents();
                 setTimeout(() => {
                     alert(`It's a tie!`);
                     resetRound();
