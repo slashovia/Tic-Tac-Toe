@@ -115,7 +115,6 @@ const functionGame = (function () {
         currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
-        makeMove();
     }
 
     const resetRound = () => {
