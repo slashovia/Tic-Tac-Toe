@@ -7,7 +7,6 @@ const domElements = (function () {
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
 
-
     const createPlayerElement = (name, marker, score) => {
 
         const th = document.createElement('th');
@@ -41,27 +40,43 @@ const domElements = (function () {
         player.scoreElement.textContent = player.score;
     }
 
-    const mouseIn = function () {
-        if (this.textContent === '') {
-            this.style.border = '5px solid limegreen';
+    const mouseClick = (cell, player) => {
+        const { moveChecker } = functionGame;
+        if (cell.style.border === '5px solid limegreen') {
+            cell.textContent = player.marker;
+            cell.style.color = 'black';
+            cell.style.border = '';
+
+            cell.removeEventListener('mouseover', mouseOver);
+            cell.removeEventListener('mouseout', mouseOut);
+            moveChecker();
+        } else {
+            alert('Warning, move not allowed. Try again.');
+        }
+    }
+
+    const mouseOver = (cell, player) => {
+        if (cell.textContent === '') {
+            cell.style.border = '5px solid limegreen';
+            cell.textContent = player.marker;
+            cell.style.color = 'rgba(0, 0, 0, 0.3)';
+        }
+        else if (cell.textContent !== '') {
+            cell.style.border = '5px solid tomato';
+        }
+    };
+
+    const mouseOut = cell => {
+        if (cell.style.color === 'rgba(0, 0, 0, 0.3)') {
+            cell.textContent = '';
+            cell.style.color = '';
+            cell.style.border = '';
         }
         else {
-            this.style.border = '5px solid tomato';
+            cell.style.border = '';
         }
     };
 
-    const mouseOut = function () {
-        this.style.border = '';
-    };
-
-
-    const removeHoverEvents = () => {
-        cell.forEach(c => {
-            c.removeEventListener('mouseover', mouseIn)
-            c.removeEventListener('mouseout', mouseOut)
-            c.style.border = '';
-        })
-    }
     const winnerCells = ([a, b, c]) => {
         cell[a].style.backgroundColor = 'yellow';
         cell[b].style.backgroundColor = 'yellow';
@@ -73,10 +88,11 @@ const domElements = (function () {
             c.textContent = '';
             c.style.backgroundColor = '';
             c.style.border = '';
+            c.style.color = '';
         })
     }
     return {
-        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseIn, mouseOut, winnerCells, resetCells, removeHoverEvents
+        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells
     }
 })();
 
@@ -96,7 +112,7 @@ const player = (function () {
 })();
 
 const functionGame = (function () {
-    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement, mouseIn, mouseOut, winnerCells, resetCells, removeHoverEvents } = domElements;
+    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOver, mouseOut, winnerCells, resetCells } = domElements;
     let player1, player2, currentPlayer, currentPlayerRound;
 
     const increaseScore = player => {
@@ -115,6 +131,7 @@ const functionGame = (function () {
         currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
+        resetCells();
     }
 
     const resetRound = () => {
@@ -133,23 +150,38 @@ const functionGame = (function () {
         makeMove();
     }
 
+    const handleMouseClick = (event) => {
+        const cell = event.target;
+        mouseClick(cell, currentPlayer);
+    }
+    const handleMouseOver = (event) => {
+        const cell = event.target;
+        mouseOver(cell, currentPlayer);
+    }
+    const handleMouseOut = (event) => {
+        const cell = event.target;
+        mouseOut(cell);
+    }
+
+    const removeHoverEvents = () => {
+        cell.forEach(c => {
+            c.removeEventListener('mouseover', handleMouseOver);
+            c.removeEventListener('mouseout', handleMouseOut)
+        }
+        )
+    }
+
     const makeMove = () => {
         cell.forEach(c => {
-            c.removeEventListener('click', moveListener);
-            c.addEventListener('click', moveListener);
-            c.addEventListener('mouseover', mouseIn);
-            c.addEventListener('mouseout', mouseOut);
+            c.removeEventListener('click', handleMouseClick);
+            c.removeEventListener('mouseover', handleMouseOver);
+            c.removeEventListener('mouseout', handleMouseOut);
+
+            c.addEventListener('click', handleMouseClick);
+            c.addEventListener('mouseover', handleMouseOver);
+            c.addEventListener('mouseout', handleMouseOut);
         });
     };
-
-    const moveListener = function () {
-        if (this.textContent === '') {
-            this.textContent = currentPlayer.marker;
-            moveChecker();
-        } else {
-            alert('Warning, move not allowed. Try again.');
-        }
-    }
 
     const moveChecker = () => {
         const winConditions = [
@@ -165,8 +197,8 @@ const functionGame = (function () {
                 cell[a].textContent === cell[b].textContent &&
                 cell[a].textContent === cell[c].textContent) {
                 winner = true;
-                removeHoverEvents();
                 winnerCells([a, b, c]);
+                removeHoverEvents();
 
                 setTimeout(() => {
                     alert(`${currentPlayer.name} wins!`);
@@ -214,4 +246,6 @@ const functionGame = (function () {
     resetBtn.addEventListener('click', resetGame);
 
     initializePlayer();
+
+    return { moveChecker }
 })();
