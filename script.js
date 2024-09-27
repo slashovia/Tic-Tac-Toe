@@ -46,9 +46,6 @@ const domElements = (function () {
             cell.textContent = player.marker;
             cell.style.color = 'black';
             cell.style.border = '';
-
-            cell.removeEventListener('mouseover', mouseOver);
-            cell.removeEventListener('mouseout', mouseOut);
             moveChecker();
         } else {
             alert('Warning, move not allowed. Try again.');
@@ -61,7 +58,7 @@ const domElements = (function () {
             cell.textContent = player.marker;
             cell.style.color = 'rgba(0, 0, 0, 0.3)';
         }
-        else if (cell.textContent !== '') {
+        else {
             cell.style.border = '5px solid tomato';
         }
     };
@@ -78,9 +75,9 @@ const domElements = (function () {
     };
 
     const winnerCells = ([a, b, c]) => {
-        cell[a].style.backgroundColor = 'yellow';
-        cell[b].style.backgroundColor = 'yellow';
-        cell[c].style.backgroundColor = 'yellow';
+        cell[a].style.backgroundColor = '#F5CB58';
+        cell[b].style.backgroundColor = '#F5CB58';
+        cell[c].style.backgroundColor = '#F5CB58';
     }
 
     const resetCells = () => {
@@ -91,6 +88,7 @@ const domElements = (function () {
             c.style.color = '';
         })
     }
+
     return {
         cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells
     }
@@ -150,15 +148,15 @@ const functionGame = (function () {
         makeMove();
     }
 
-    const handleMouseClick = (event) => {
+    const handleMouseClick = event => {
         const cell = event.target;
         mouseClick(cell, currentPlayer);
     }
-    const handleMouseOver = (event) => {
+    const handleMouseOver = event => {
         const cell = event.target;
         mouseOver(cell, currentPlayer);
     }
-    const handleMouseOut = (event) => {
+    const handleMouseOut = event => {
         const cell = event.target;
         mouseOut(cell);
     }
