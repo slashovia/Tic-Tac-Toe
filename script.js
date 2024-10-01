@@ -7,7 +7,6 @@ const domElements = (function () {
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
 
-
     const createPlayerElement = (name, marker, score) => {
 
         const th = document.createElement('th');
@@ -18,23 +17,80 @@ const domElements = (function () {
         td.textContent = score;
         tBody.appendChild(td);
 
-        const info = document.createElement('p');
-        info.textContent = `${name}'s marker: ${marker}`;
-        infoPlayer.appendChild(info);
+        const infoName = document.createElement('p');
+        infoName.textContent = `${name}'s marker: `;
+        infoPlayer.appendChild(infoName);
+
+        const infoMarker = document.createElement('span');
+        infoMarker.textContent = marker;
+        infoName.appendChild(infoMarker);
 
         return td;
     }
 
     const updateCurrentPlayerElement = player => {
-        livePlayer.textContent = `Current Player: ${player.name}`;
+        livePlayer.textContent = `Current Player: `;
+
+        const currentPlayerName = document.createElement('span');
+        currentPlayerName.textContent = player.name;
+        livePlayer.appendChild(currentPlayerName);
     }
 
     const updateScorePlayerElement = player => {
         player.scoreElement.textContent = player.score;
     }
 
+    const mouseClick = (cell, player) => {
+        const { moveChecker } = functionGame;
+        if (cell.style.border === '5px solid limegreen') {
+            cell.textContent = player.marker;
+            cell.style.color = 'black';
+            cell.style.border = '';
+            moveChecker();
+        } else {
+            alert('Warning, move not allowed. Try again.');
+        }
+    }
+
+    const mouseOver = (cell, player) => {
+        if (cell.textContent === '') {
+            cell.style.border = '5px solid limegreen';
+            cell.textContent = player.marker;
+            cell.style.color = 'rgba(0, 0, 0, 0.3)';
+        }
+        else {
+            cell.style.border = '5px solid tomato';
+        }
+    };
+
+    const mouseOut = cell => {
+        if (cell.style.color === 'rgba(0, 0, 0, 0.3)') {
+            cell.textContent = '';
+            cell.style.color = '';
+            cell.style.border = '';
+        }
+        else {
+            cell.style.border = '';
+        }
+    };
+
+    const winnerCells = ([a, b, c]) => {
+        cell[a].style.backgroundColor = '#F5CB58';
+        cell[b].style.backgroundColor = '#F5CB58';
+        cell[c].style.backgroundColor = '#F5CB58';
+    }
+
+    const resetCells = () => {
+        cell.forEach(c => {
+            c.textContent = '';
+            c.style.backgroundColor = '';
+            c.style.border = '';
+            c.style.color = '';
+        })
+    }
+
     return {
-        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement
+        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells
     }
 })();
 
@@ -54,7 +110,7 @@ const player = (function () {
 })();
 
 const functionGame = (function () {
-    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement } = domElements;
+    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOver, mouseOut, winnerCells, resetCells } = domElements;
     let player1, player2, currentPlayer, currentPlayerRound;
 
     const increaseScore = player => {
@@ -73,12 +129,12 @@ const functionGame = (function () {
         currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
-        makeMove();
+        resetCells();
     }
 
     const resetRound = () => {
         switchTurnRound();
-        cell.forEach(c => c.textContent = '');
+        resetCells()
         makeMove();
     }
 
@@ -86,27 +142,44 @@ const functionGame = (function () {
         currentPlayerRound = player1;
         currentPlayer = player1;
         updateCurrentPlayerElement(currentPlayer);
-        cell.forEach(c => c.textContent = '');
+        resetCells();
         resetScore(player1);
         resetScore(player2);
         makeMove();
     }
 
+    const handleMouseClick = event => {
+        const cell = event.target;
+        mouseClick(cell, currentPlayer);
+    }
+    const handleMouseOver = event => {
+        const cell = event.target;
+        mouseOver(cell, currentPlayer);
+    }
+    const handleMouseOut = event => {
+        const cell = event.target;
+        mouseOut(cell);
+    }
+
+    const removeHoverEvents = () => {
+        cell.forEach(c => {
+            c.removeEventListener('mouseover', handleMouseOver);
+            c.removeEventListener('mouseout', handleMouseOut)
+        }
+        )
+    }
+
     const makeMove = () => {
         cell.forEach(c => {
-            c.removeEventListener('click', moveListener);
-            c.addEventListener('click', moveListener);
+            c.removeEventListener('click', handleMouseClick);
+            c.removeEventListener('mouseover', handleMouseOver);
+            c.removeEventListener('mouseout', handleMouseOut);
+
+            c.addEventListener('click', handleMouseClick);
+            c.addEventListener('mouseover', handleMouseOver);
+            c.addEventListener('mouseout', handleMouseOut);
         });
     };
-
-    const moveListener = function () {
-        if (this.textContent === '') {
-            this.textContent = currentPlayer.marker;
-            moveChecker();
-        } else {
-            alert('Warning, move not allowed. Try again.');
-        }
-    }
 
     const moveChecker = () => {
         const winConditions = [
@@ -122,6 +195,8 @@ const functionGame = (function () {
                 cell[a].textContent === cell[b].textContent &&
                 cell[a].textContent === cell[c].textContent) {
                 winner = true;
+                winnerCells([a, b, c]);
+                removeHoverEvents();
 
                 setTimeout(() => {
                     alert(`${currentPlayer.name} wins!`);
@@ -135,6 +210,7 @@ const functionGame = (function () {
         if (!winner) {
             const allFilled = Array.from(cell).every(c => c.textContent);
             if (allFilled) {
+                removeHoverEvents();
                 setTimeout(() => {
                     alert(`It's a tie!`);
                     resetRound();
@@ -168,4 +244,6 @@ const functionGame = (function () {
     resetBtn.addEventListener('click', resetGame);
 
     initializePlayer();
+
+    return { moveChecker }
 })();

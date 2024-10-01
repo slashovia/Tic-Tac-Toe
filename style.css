@@ -1,6 +1,17 @@
+@import url(/reset.css) layer(reset);
+
+:root {
+    --main-color: #F58358;
+    --secondary-color: #ffffff;
+}
+
 header,
 main {
     margin: 2em;
+}
+
+body {
+    background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
 }
 
 header h1 {
@@ -21,10 +32,18 @@ input {
 
 .info {
     grid-area: info;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    & span {
+        font-weight: bold;
+    }
 }
 
 
 .gameboard {
+    background-color: var(--secondary-color);
     grid-area: gameboard;
     display: grid;
     grid-template-columns: repeat(3, minmax(100px, 1fr));
@@ -55,9 +74,20 @@ input {
 .scoreboard {
     grid-area: scoreboard;
     justify-self: center;
+
+
+    & td {
+        font-size: 1.5em;
+        font-weight: 600;
+    }
+
+    & th {
+        font-weight: 400;
+    }
 }
 
 table {
+    background-color: var(--secondary-color);
     border-collapse: collapse;
     height: 100px;
     text-align: center;
@@ -74,10 +104,31 @@ table {
     display: flex;
     gap: 2em;
 
+
     & input {
         padding: 0.5em;
         width: 100px;
         border-radius: 0.5em;
+        background-color: var(--main-color);
+        font-weight: 800;
     }
 
+    & #startBtn {
+        animation-name: button;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+}
+
+@keyframes button {
+    from {
+        background-color: var(--main-color);
+    }
+
+    to {
+        background-color: white;
+        color: var(--main-color);
+    }
 }
