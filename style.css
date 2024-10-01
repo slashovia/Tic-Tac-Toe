@@ -2,6 +2,7 @@
 
 :root {
     --main-color: #F58358;
+    --secondary-color: #ffffff;
 }
 
 header,
@@ -42,7 +43,7 @@ input {
 
 
 .gameboard {
-    background-color: white;
+    background-color: var(--secondary-color);
     grid-area: gameboard;
     display: grid;
     grid-template-columns: repeat(3, minmax(100px, 1fr));
@@ -74,6 +75,7 @@ input {
     grid-area: scoreboard;
     justify-self: center;
 
+
     & td {
         font-size: 1.5em;
         font-weight: 600;
@@ -85,6 +87,7 @@ input {
 }
 
 table {
+    background-color: var(--secondary-color);
     border-collapse: collapse;
     height: 100px;
     text-align: center;
@@ -116,10 +119,6 @@ table {
         animation-timing-function: linear;
         animation-iteration-count: infinite;
         animation-direction: alternate;
-
-        &:active {
-            animation-play-state: paused;
-        }
     }
 }
 
