@@ -1,4 +1,8 @@
 const domElements = (function () {
+    const dialog = document.querySelector('dialog');
+    const backdrop = document.querySelector('.backdrop')
+    const formInput = document.querySelectorAll('.formInput');
+    const closeBtn = document.querySelector('#closeBtn')
     const cell = document.querySelectorAll('.cell');
     const livePlayer = document.querySelector('.current-player');
     const infoPlayer = document.querySelector('.info');
@@ -89,8 +93,24 @@ const domElements = (function () {
         })
     }
 
+    const closeDialog = () => {
+        dialog.close();
+        backdrop.style.display = 'none'
+        formInput.forEach(input => {
+            input.value = '';
+        })
+    }
+
+
+    dialog.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeDialog()
+        }
+    })
+
+    closeBtn.addEventListener('click', closeDialog);
     return {
-        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells
+        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells,
     }
 })();
 

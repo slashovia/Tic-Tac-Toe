@@ -9,6 +9,34 @@
 </head>
 
 <body>
+    <div class="backdrop"></div>
+    <dialog open>
+        <form method="dialog">
+            <h2>Insert Players' info!</h2>
+            <label for="p1name">Player 1 name:</label>
+            <input class="formInput" type="text" name="p1name" id="p1name" maxlength="10" title="Up to 10 characters."
+                required autofocus>
+            <p>Player 1 marker:</p>
+            <input type="radio" name="p1marker" id="p1markerX" value="X" checked>
+            <label for="p1marker">X</label>
+            <input type="radio" name="p1marker" id="p1markerO" value="0">
+            <label for="p1marker">0</label>
+
+            <label for="p2name">Player 2 name:</label>
+            <input class="formInput" type="text" name="p2name" id="p2name" maxlength="10" title="Up to 10 characters."
+                required>
+            <p>Player 2 marker:</p>
+            <input type="radio" name="p2marker" id="p2markerX" value="X">
+            <label for="p2marker">X</label>
+            <input type="radio" name="p2marker" id="p2markerO" value="O" checked>
+            <label for="p2marker">O</label>
+            <div class="inputBtn">
+                <input type="submit" id="submitBtn" value="Submit">
+                <input type="reset" value="Clear">
+                <input type="button" id="closeBtn" value="Close">
+            </div>
+        </form>
+    </dialog>
     <header>
         <h1>Tic Tac Toe!</h1>
     </header>
