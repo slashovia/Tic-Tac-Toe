@@ -20,7 +20,8 @@ main {
     margin: 2em;
 }
 
-header h1 {
+h1,
+h2 {
     text-align: center;
 }
 
@@ -34,6 +35,18 @@ main {
 
 input {
     cursor: pointer;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    font-weight: 800;
+}
+
+input:not([type="text"]) {
+    background-color: var(--main-color);
+
+    &:hover {
+        background-color: var(--secondary-color);
+        color: var(--main-color);
+    }
 }
 
 .info {
@@ -112,11 +125,7 @@ table {
 
 
     & input {
-        padding: 0.5em;
         width: 100px;
-        border-radius: 0.5em;
-        background-color: var(--main-color);
-        font-weight: 800;
     }
 
     & #startBtn {
@@ -136,11 +145,32 @@ dialog {
     padding: 1.5em;
     z-index: 1000;
     background-color: rgba(255, 255, 255, 0.9);
+
+    & dialog::backdrop {
+        background-color: transparent;
+    }
+
+    & form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        gap: 0.5em;
+
+        & .radio-container,
+        .inputBtn {
+            display: flex;
+            gap: 0.5em;
+
+        }
+
+        & .inputBtn {
+            margin: 0.25em;
+            justify-content: center;
+
+        }
+    }
 }
 
-dialog::backdrop {
-    background-color: transparent;
-}
 
 .backdrop {
     position: fixed;
@@ -159,7 +189,7 @@ dialog::backdrop {
     }
 
     to {
-        background-color: white;
+        background-color: var(--secondary-color);
         color: var(--main-color);
     }
 }
