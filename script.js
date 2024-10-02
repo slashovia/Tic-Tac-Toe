@@ -2,7 +2,11 @@ const domElements = (function () {
     const dialog = document.querySelector('dialog');
     const backdrop = document.querySelector('.backdrop')
     const formInput = document.querySelectorAll('.formInput');
-    const closeBtn = document.querySelector('#closeBtn')
+    const p1name = document.querySelector('#p1name');
+    const p2name = document.querySelector('#p2name');
+    const radioContainer = document.querySelectorAll('.radio-container');
+    const submitBtn = document.querySelector('#submitBtn');
+    const closeBtn = document.querySelector('#closeBtn');
     const cell = document.querySelectorAll('.cell');
     const livePlayer = document.querySelector('.current-player');
     const infoPlayer = document.querySelector('.info');
@@ -98,9 +102,25 @@ const domElements = (function () {
         backdrop.style.display = 'none'
         formInput.forEach(input => {
             input.value = '';
-        })
+        });
     }
 
+    radioContainer.forEach(option => {
+        option.addEventListener('click', e => {
+            if (e.target.id === 'p1markerX') {
+                document.querySelector('#p2markerO').checked = true;
+            }
+            else if (e.target.id === 'p1markerO') {
+                document.querySelector('#p2markerX').checked = true;
+            }
+            else if (e.target.id === 'p2markerX') {
+                document.querySelector('#p1markerO').checked = true;
+            }
+            else {
+                document.querySelector('#p1markerX').checked = true;
+            }
+        })
+    })
 
     dialog.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
@@ -109,6 +129,13 @@ const domElements = (function () {
     })
 
     closeBtn.addEventListener('click', closeDialog);
+
+    submitBtn.addEventListener('click', () => {
+        const { createPlayer } = player
+        createPlayer(p1name.value, p1marker.value);
+        createPlayer(p2name.value, p2marker.value);
+        closeDialog();
+    })
     return {
         cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells,
     }
@@ -122,7 +149,7 @@ const player = (function () {
         const scoreElement = createPlayerElement(name, marker, score);
 
         return {
-            name, marker, scoreElement, score
+            name, marker, scoreElement, score, createPlayer
         }
     }
 
