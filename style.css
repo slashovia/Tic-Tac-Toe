@@ -29,24 +29,28 @@ main {
     display: grid;
     grid-template-columns: 1fr minmax(300px, 2fr) 1fr;
     grid-template-areas: 'info gameboard scoreboard'
-        'buttons buttons buttons';
+        'button-wrapper button-wrapper button-wrapper';
     row-gap: 5em;
 }
 
 input {
     cursor: pointer;
     padding: 0.5em;
-    border-radius: 0.5em;
     font-weight: 800;
 }
 
-input:not([type="text"]) {
+.button {
     background-color: var(--main-color);
 
     &:hover {
         background-color: var(--secondary-color);
         color: var(--main-color);
     }
+}
+
+.button,
+input[type="text"] {
+    border-radius: 0.5em;
 }
 
 .info {
@@ -79,7 +83,6 @@ input:not([type="text"]) {
         border: 1px solid black;
         aspect-ratio: 1 /1;
         font-size: 5em;
-        cursor: pointer;
     }
 
     & input {
@@ -117,12 +120,11 @@ table {
     }
 }
 
-.buttons {
-    grid-area: buttons;
+.button-wrapper {
+    grid-area: button-wrapper;
     justify-self: center;
     display: flex;
     gap: 2em;
-
 
     & input {
         width: 100px;
@@ -157,16 +159,20 @@ dialog {
         gap: 0.5em;
 
         & .radio-container,
-        .inputBtn {
+        .button-container {
             display: flex;
             gap: 0.5em;
 
         }
 
-        & .inputBtn {
+        & .button-container {
             margin: 0.25em;
             justify-content: center;
 
+        }
+
+        & input[type="radio"] {
+            margin: 0.25em 0.5em;
         }
     }
 }
