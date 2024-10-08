@@ -14,11 +14,10 @@
         <form method="dialog">
             <h2>Insert Players' info!</h2>
             <label for="p1name">Player 1's name:</label>
-            <input class="formInput" type="text" name="p1name" id="p1name" maxlength="10" title="Up to 10 characters."
-                required autofocus>
+            <input type="text" name="p1name" id="p1name" value="Hashmi" maxlength="10" title="Up to 10 characters."
+                autofocus>
             <label for="p2name">Player 2's name:</label>
-            <input class="formInput" type="text" name="p2name" id="p2name" maxlength="10" title="Up to 10 characters."
-                required>
+            <input type="text" name="p2name" id="p2name" value="Fabrizio" maxlength="10" title="Up to 10 characters.">
 
             <p>Player 1's marker:</p>
             <div class="radio-container">
@@ -34,10 +33,16 @@
                 <label>
                     <input type="radio" name="p2marker" id="p2markerO" value="O" checked>O</label>
             </div>
-            <div class="inputBtn">
-                <input type="submit" id="submitBtn" value="Submit">
-                <input type="reset" value="Clear">
-                <input type="button" id="closeBtn" value="Close">
+            <p>First Player to move:
+            </p>
+            <div class="radio-container">
+                <label><input type="radio" name="firstToMove" id="p1ToMove" value="player1" checked>Player 1</label>
+                <label><input type="radio" name="firstToMove" id="p2ToMove" value="player2">Player 2</label>
+            </div>
+            <div class="button-container">
+                <input class="button" type="submit" id="submitBtn" value="Submit">
+                <input class="button" type="reset" value="Clear">
+                <input class="button" type="button" id="closeBtn" value="Close">
             </div>
         </form>
     </dialog>
@@ -72,8 +77,8 @@
 
             </table>
         </div>
-        <div class="buttons"><input type="button" id="startBtn" value="Start"><input type="reset" id='resetBtn'
-                value="Reset"></div>
+        <div class="button-wrapper"><input class="button" type="button" id="startBtn" value="Start"><input
+                class="button" type="reset" id='resetBtn' value="Reset"></div>
     </main>
     <script src="/script.js"></script>
 </body>
