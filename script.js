@@ -12,18 +12,11 @@ const domElements = (function () {
     const tBody = document.querySelector('tbody tr');
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
-    let player1, player2, currentPlayer;
+    let player1, player2;
 
     const getCells = () => cells;
     const getPlayer1 = () => player1;
     const getPlayer2 = () => player2;
-
-    const getCurrentPlayer = () => currentPlayer;
-
-    const setCurrentPlayer = () => {
-        currentPlayer = (currentPlayer === player1) ? player2 : player1;
-        updateCurrentPlayerElement();
-    }
 
     const createPlayerElement = (name, marker, score) => {
 
@@ -47,8 +40,11 @@ const domElements = (function () {
     }
 
     const updateCurrentPlayerElement = () => {
+
+        const { getCurrentPlayer } = functionGame;
         livePlayer.textContent = `Current Player: `;
 
+        let currentPlayer = getCurrentPlayer();
         const currentPlayerName = document.createElement('span');
         currentPlayerName.textContent = currentPlayer.name;
         livePlayer.appendChild(currentPlayerName);
@@ -157,8 +153,7 @@ const domElements = (function () {
             player2 = player.createPlayer(p2name, p2marker);
             player1 = player.createPlayer(p1name, p1marker);
         }
-        currentPlayer = startingPlayer === 'player1' ? player1 : player2;
-        updateCurrentPlayerElement();
+        functionGame.setStartingPlayer(startingPlayer);
         resetCells();
         closeDialog();
     })
@@ -168,7 +163,7 @@ const domElements = (function () {
     resetBtn.addEventListener('click', () => { functionGame.resetGame() });
 
     return {
-        createPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells, getCurrentPlayer, setCurrentPlayer, getPlayer1, getPlayer2, getCells
+        createPlayerElement, updateScorePlayerElement, updateCurrentPlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells, getPlayer1, getPlayer2, getCells
     }
 })();
 
@@ -198,33 +193,34 @@ const player = (function () {
 })();
 
 const functionGame = (function () {
-    const { mouseClick, mouseOver, mouseOut, winnerCells, resetCells, getCurrentPlayer, setCurrentPlayer, getPlayer1, getPlayer2, getCells } = domElements;
+    const { mouseClick, mouseOver, mouseOut, winnerCells, resetCells, getPlayer1, getPlayer2, getCells, updateCurrentPlayerElement } = domElements;
 
     const cell = getCells();
+    let currentPlayer;
+    const getCurrentPlayer = () => currentPlayer;
 
-    const resetRound = () => {
-        setCurrentPlayer();
-        resetCells()
-        makeMove();
-    }
-
-    const resetGame = () => {
+    const setStartingPlayer = (startingPlayer) => {
         let player1 = getPlayer1();
         let player2 = getPlayer2();
-        resetCells();
-        player1.resetScore();
-        player2.resetScore();
-        makeMove();
+        currentPlayer = startingPlayer === 'player1' ? player1 : player2;
+        updateCurrentPlayerElement();
+
+    }
+    const switchTurn = () => {
+        let player1 = getPlayer1();
+        let player2 = getPlayer2();
+        currentPlayer = (currentPlayer === player1) ? player2 : player1;
+        updateCurrentPlayerElement();
     }
 
     const handleMouseClick = event => {
         const cell = event.target;
-        mouseClick(cell, getCurrentPlayer());
+        mouseClick(cell, currentPlayer);
     }
 
     const handleMouseOver = event => {
         const cell = event.target;
-        mouseOver(cell, getCurrentPlayer());
+        mouseOver(cell, currentPlayer);
     }
 
     const handleMouseOut = event => {
@@ -270,7 +266,6 @@ const functionGame = (function () {
                 removeHoverEvents();
 
                 setTimeout(() => {
-                    let currentPlayer = getCurrentPlayer()
                     alert(`${currentPlayer.name} wins!`);
                     currentPlayer.increaseScore();
                     resetRound();
@@ -291,9 +286,20 @@ const functionGame = (function () {
         }
     }
 
-    const switchTurn = () => {
-        setCurrentPlayer();
+    const resetRound = () => {
+        switchTurn();
+        resetCells()
+        makeMove();
     }
 
-    return { moveChecker, makeMove, resetGame }
+    const resetGame = () => {
+        let player1 = getPlayer1();
+        let player2 = getPlayer2();
+        resetCells();
+        player1.resetScore();
+        player2.resetScore();
+        makeMove();
+    }
+
+    return { moveChecker, makeMove, resetGame, setStartingPlayer, getCurrentPlayer }
 })();
