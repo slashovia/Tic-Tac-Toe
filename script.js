@@ -1,19 +1,29 @@
 const domElements = (function () {
     const dialog = document.querySelector('dialog');
     const backdrop = document.querySelector('.backdrop')
-    const formInput = document.querySelectorAll('.formInput');
-    const p1name = document.querySelector('#p1name');
-    const p2name = document.querySelector('#p2name');
+    const inputName = document.querySelectorAll('dialog input[type="text"]');
     const radioContainer = document.querySelectorAll('.radio-container');
     const submitBtn = document.querySelector('#submitBtn');
     const closeBtn = document.querySelector('#closeBtn');
-    const cell = document.querySelectorAll('.cell');
+    const cells = document.querySelectorAll('.cell');
     const livePlayer = document.querySelector('.current-player');
     const infoPlayer = document.querySelector('.info');
     const tHead = document.querySelector('thead tr');
     const tBody = document.querySelector('tbody tr');
     const startBtn = document.querySelector('#startBtn');
     const resetBtn = document.querySelector('#resetBtn');
+    let player1, player2, currentPlayer;
+
+    const getCells = () => cells;
+    const getPlayer1 = () => player1;
+    const getPlayer2 = () => player2;
+
+    const getCurrentPlayer = () => currentPlayer;
+
+    const setCurrentPlayer = () => {
+        currentPlayer = (currentPlayer === player1) ? player2 : player1;
+        updateCurrentPlayerElement();
+    }
 
     const createPlayerElement = (name, marker, score) => {
 
@@ -36,25 +46,25 @@ const domElements = (function () {
         return td;
     }
 
-    const updateCurrentPlayerElement = player => {
+    const updateCurrentPlayerElement = () => {
         livePlayer.textContent = `Current Player: `;
 
         const currentPlayerName = document.createElement('span');
-        currentPlayerName.textContent = player.name;
+        currentPlayerName.textContent = currentPlayer.name;
         livePlayer.appendChild(currentPlayerName);
     }
 
     const updateScorePlayerElement = player => {
-        player.scoreElement.textContent = player.score;
+        player.scoreElement.textContent = player.getScore();
     }
 
     const mouseClick = (cell, player) => {
-        const { moveChecker } = functionGame;
+
         if (cell.style.border === '5px solid limegreen') {
             cell.textContent = player.marker;
             cell.style.color = 'black';
             cell.style.border = '';
-            moveChecker();
+            functionGame.moveChecker();
         } else {
             alert('Warning, move not allowed. Try again.');
         }
@@ -83,13 +93,13 @@ const domElements = (function () {
     };
 
     const winnerCells = ([a, b, c]) => {
-        cell[a].style.backgroundColor = '#F5CB58';
-        cell[b].style.backgroundColor = '#F5CB58';
-        cell[c].style.backgroundColor = '#F5CB58';
+        cells[a].style.backgroundColor = '#F5CB58';
+        cells[b].style.backgroundColor = '#F5CB58';
+        cells[c].style.backgroundColor = '#F5CB58';
     }
 
     const resetCells = () => {
-        cell.forEach(c => {
+        cells.forEach(c => {
             c.textContent = '';
             c.style.backgroundColor = '';
             c.style.border = '';
@@ -100,10 +110,19 @@ const domElements = (function () {
     const closeDialog = () => {
         dialog.close();
         backdrop.style.display = 'none'
-        formInput.forEach(input => {
+        inputName.forEach(input => {
             input.value = '';
         });
     }
+
+    dialog.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeDialog()
+        }
+    })
+
+    closeBtn.addEventListener('click', closeDialog);
+
 
     radioContainer.forEach(option => {
         option.addEventListener('click', e => {
@@ -116,93 +135,98 @@ const domElements = (function () {
             else if (e.target.id === 'p2markerX') {
                 document.querySelector('#p1markerO').checked = true;
             }
-            else {
+            else if (e.target.id === 'p2markerO') {
                 document.querySelector('#p1markerX').checked = true;
             }
         })
     })
 
-    dialog.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-            closeDialog()
-        }
-    })
-
-    closeBtn.addEventListener('click', closeDialog);
-
     submitBtn.addEventListener('click', () => {
-        const { createPlayer } = player
-        createPlayer(p1name.value, p1marker.value);
-        createPlayer(p2name.value, p2marker.value);
+        const p1name = document.querySelector('#p1name').value;
+        const p2name = document.querySelector('#p2name').value;
+        const p1marker = document.querySelector('input[name="p1marker"]:checked').value;
+        const p2marker = document.querySelector('input[name="p2marker"]:checked').value;
+        const startingPlayer = document.querySelector('input[name="firstToMove"]:checked').value;
+
+        if (startingPlayer === 'player1') {
+            player1 = player.createPlayer(p1name, p1marker);
+            player2 = player.createPlayer(p2name, p2marker);
+
+        }
+        else {
+            player2 = player.createPlayer(p2name, p2marker);
+            player1 = player.createPlayer(p1name, p1marker);
+        }
+        currentPlayer = startingPlayer === 'player1' ? player1 : player2;
+        updateCurrentPlayerElement();
+        resetCells();
         closeDialog();
     })
+
+    startBtn.addEventListener('click', () => { functionGame.makeMove() });
+
+    resetBtn.addEventListener('click', () => { functionGame.resetGame() });
+
     return {
-        cell, infoPlayer, startBtn, resetBtn, createPlayerElement, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells,
+        createPlayerElement, updateScorePlayerElement, mouseClick, mouseOut, mouseOver, winnerCells, resetCells, getCurrentPlayer, setCurrentPlayer, getPlayer1, getPlayer2, getCells
     }
 })();
 
 const player = (function () {
-    const { createPlayerElement } = domElements;
-
     const createPlayer = (name, marker) => {
         let score = 0;
-        const scoreElement = createPlayerElement(name, marker, score);
+
+        const getScore = () => score;
+
+        const scoreElement = domElements.createPlayerElement(name, marker, score);
+
+        const increaseScore = () => {
+            score++;
+            domElements.updateScorePlayerElement({ scoreElement, getScore });
+        }
+
+        const resetScore = () => {
+            score = 0;
+            domElements.updateScorePlayerElement({ scoreElement, getScore });
+        }
 
         return {
-            name, marker, scoreElement, score, createPlayer
+            scoreElement, name, marker, getScore, increaseScore, resetScore
         }
     }
-
     return { createPlayer };
 })();
 
 const functionGame = (function () {
-    const { cell, startBtn, resetBtn, updateCurrentPlayerElement, updateScorePlayerElement, mouseClick, mouseOver, mouseOut, winnerCells, resetCells } = domElements;
-    let player1, player2, currentPlayer, currentPlayerRound;
+    const { mouseClick, mouseOver, mouseOut, winnerCells, resetCells, getCurrentPlayer, setCurrentPlayer, getPlayer1, getPlayer2, getCells } = domElements;
 
-    const increaseScore = player => {
-        player.score++;
-        updateScorePlayerElement(player);
-    }
-
-    const resetScore = player => {
-        player.score = 0;
-        updateScorePlayerElement(player);
-    }
-
-    const initializePlayer = () => {
-        player1 = player.createPlayer('Hashmi', 'X');
-        player2 = player.createPlayer('Fabrizio', 'O');
-        currentPlayerRound = player1;
-        currentPlayer = player1;
-        updateCurrentPlayerElement(currentPlayer);
-        resetCells();
-    }
+    const cell = getCells();
 
     const resetRound = () => {
-        switchTurnRound();
+        setCurrentPlayer();
         resetCells()
         makeMove();
     }
 
     const resetGame = () => {
-        currentPlayerRound = player1;
-        currentPlayer = player1;
-        updateCurrentPlayerElement(currentPlayer);
+        let player1 = getPlayer1();
+        let player2 = getPlayer2();
         resetCells();
-        resetScore(player1);
-        resetScore(player2);
+        player1.resetScore();
+        player2.resetScore();
         makeMove();
     }
 
     const handleMouseClick = event => {
         const cell = event.target;
-        mouseClick(cell, currentPlayer);
+        mouseClick(cell, getCurrentPlayer());
     }
+
     const handleMouseOver = event => {
         const cell = event.target;
-        mouseOver(cell, currentPlayer);
+        mouseOver(cell, getCurrentPlayer());
     }
+
     const handleMouseOut = event => {
         const cell = event.target;
         mouseOut(cell);
@@ -246,51 +270,30 @@ const functionGame = (function () {
                 removeHoverEvents();
 
                 setTimeout(() => {
+                    let currentPlayer = getCurrentPlayer()
                     alert(`${currentPlayer.name} wins!`);
-                    increaseScore(currentPlayer);
+                    currentPlayer.increaseScore();
                     resetRound();
-                }, 50);
+                }, 100);
             }
         });
 
         // Check for tie
-        if (!winner) {
-            const allFilled = Array.from(cell).every(c => c.textContent);
-            if (allFilled) {
-                removeHoverEvents();
-                setTimeout(() => {
-                    alert(`It's a tie!`);
-                    resetRound();
-                }, 50);
-            } else {
-                switchTurn(); // Only switch turns if there is no tie or winner
-            }
+        const allFilled = Array.from(cell).every(c => c.textContent);
+        if (!winner && allFilled) {
+            removeHoverEvents();
+            setTimeout(() => {
+                alert(`It's a tie!`);
+                resetRound();
+            }, 50);
+        } else if (!winner) {
+            switchTurn(); // Only switch turns if there is no tie or winner
         }
     }
 
     const switchTurn = () => {
-        if (currentPlayer === player1) {
-            currentPlayer = player2;
-        } else {
-            currentPlayer = player1;
-        }
-        updateCurrentPlayerElement(currentPlayer);
+        setCurrentPlayer();
     }
 
-    const switchTurnRound = () => {
-        if (currentPlayerRound === player1) {
-            currentPlayerRound = player2;
-        } else {
-            currentPlayerRound = player1;
-        }
-        currentPlayer = currentPlayerRound;
-        updateCurrentPlayerElement(currentPlayer);
-    }
-
-    startBtn.addEventListener('click', makeMove);
-    resetBtn.addEventListener('click', resetGame);
-
-    initializePlayer();
-
-    return { moveChecker }
+    return { moveChecker, makeMove, resetGame }
 })();
