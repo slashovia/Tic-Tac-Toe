@@ -112,8 +112,6 @@ export const domManager = function () {
     }
 }()
 
-
-
 // MouseHandler
 const mouse = function () {
     return {
@@ -148,7 +146,6 @@ const mouse = function () {
         }
     }
 }();
-
 
 // DialogHandler
 export const dialogHandler = function () {
