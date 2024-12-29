@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+</head>
+
+<body>
+    <div class="backdrop"></div>
+    <dialog>
+        <form method="dialog">
+            <h2>Insert Players' info!</h2>
+            <label for="p1name">Player 1's name<span>*</span>:</label>
+            <input type="text" name="p1name" id="p1name" pattern=".{1,10}" title="Up to 10 characters." required
+                autofocus>
+            <label for="p2name">Player 2's name<span>*</span>:</label>
+            <input type="text" name="p2name" id="p2name" pattern=".{1,10}" title="Up to 10 characters." required>
+
+            <p>Player 1's marker:</p>
+            <div class="radio-container">
+                <label><input type="radio" name="p1marker" id="p1markerX" value="X" checked>X</label>
+                <label>
+                    <input type="radio" name="p1marker" id="p1markerO" value="O">O</label>
+            </div>
+            <p>Player 2's marker:</p>
+            <div class="radio-container">
+                <label>
+                    <input type="radio" name="p2marker" id="p2markerX" value="X">X</label>
+                <label>
+                    <input type="radio" name="p2marker" id="p2markerO" value="O" checked>O</label>
+            </div>
+            <p>First Player to move:
+            </p>
+            <div class="radio-container">
+                <label><input type="radio" name="firstToMove" id="p1ToMove" value="player1" checked>Player 1</label>
+                <label><input type="radio" name="firstToMove" id="p2ToMove" value="player2">Player 2</label>
+            </div>
+            <div class="button-container">
+                <input class="button" type="submit" id="submitBtn" value="Submit">
+                <input class="button" type="reset" value="Clear">
+                <input class="button" type="button" id="closeBtn" value="Close">
+            </div>
+        </form>
+    </dialog>
+    <header>
+        <h1>Tic Tac Toe!</h1>
+    </header>
+    <main>
+        <div class="info">
+            <p class="current-player"></p>
+        </div>
+        <div class="gameboard">
+        </div>
+        <div class="scoreboard">
+            <table>
+                <thead>
+                    <tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <div class="button-wrapper"><input class="button" type="button" id="startBtn" value="Start" disabled><input
+                class="button" type="reset" id='resetBtn' value="Reset" disabled><input class="button" type="button"
+                id="newGameBtn" value="New Game"></div>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,240 @@
+@import url('./reset.css') layer(reset);
+
+:root {
+    --main-color: #F58358;
+    --secondary-color: #ffffff;
+    --main-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+}
+
+header,
+main {
+    margin: 2em;
+}
+
+h1,
+h2 {
+    text-align: center;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr minmax(300px, 2fr) 1fr;
+    grid-template-areas: 'info gameboard scoreboard'
+        'button-wrapper button-wrapper button-wrapper';
+    row-gap: 5em;
+}
+
+input {
+    cursor: pointer;
+    padding: 0.5em;
+    font-weight: 800;
+}
+
+input:focus-visible:not(.cell) {
+    outline: 2px solid #55AD9C;
+    outline-offset: 1px;
+}
+
+.button {
+    background-color: var(--main-color);
+    color: var(--secondary-color);
+    box-shadow: var(--main-shadow);
+    padding: 0.75em 1.5em;
+    border: none;
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.2s, color 0.3s;
+
+    &:hover {
+        background-color: var(--secondary-color);
+        color: var(--main-color);
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(2px);
+    }
+}
+
+.button,
+input[type="text"] {
+    border-radius: 0.5em;
+}
+
+input[type="text"] {
+    padding: 0.75em;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-shadow: var(--main-shadow);
+}
+
+.info {
+    grid-area: info;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    & span {
+        font-weight: bold;
+    }
+}
+
+
+.gameboard {
+    background-color: var(--secondary-color);
+    grid-area: gameboard;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+    grid-template-rows: repeat(3, minmax(100px, 1fr));
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid black;
+    box-shadow: var(--main-shadow);
+
+    & .cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid black;
+        aspect-ratio: 1 /1;
+        font-size: 5em;
+        transition: transform 0.2s;
+
+        /* Transform property is in JS file */
+
+    }
+
+
+    & input {
+        width: 100%;
+        height: 100%;
+        border: none;
+
+    }
+
+}
+
+.scoreboard {
+    grid-area: scoreboard;
+    justify-self: center;
+
+    & td {
+        font-size: 1.5em;
+        font-weight: 600;
+    }
+
+    & th {
+        font-weight: 400;
+    }
+}
+
+table {
+    background-color: var(--secondary-color);
+    border-collapse: collapse;
+    height: 100px;
+    text-align: center;
+    box-shadow: var(--main-shadow);
+
+    & * {
+        border: 1px solid black;
+        padding: 0.5em;
+    }
+}
+
+.button-wrapper {
+    grid-area: button-wrapper;
+    justify-self: center;
+    display: flex;
+    gap: 2em;
+
+    & input {
+        width: 130px;
+    }
+
+    & #startBtn,
+    #newGameBtn {
+        animation-name: button;
+        animation-duration: 0s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
+
+    & #newGameBtn {
+        animation-duration: 1s;
+    }
+}
+
+dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1.5em;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--main-shadow);
+    border-radius: 10px;
+
+    & form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        gap: 0.75em;
+
+        & .radio-container,
+        .button-container {
+            display: flex;
+            gap: 0.5em;
+
+        }
+
+        & .button-container {
+            margin: 0.25em;
+            justify-content: center;
+
+        }
+
+        & input[type="radio"] {
+            margin: 0.25em 0.5em;
+        }
+
+        & label span {
+            font-weight: bold;
+            color: red;
+        }
+    }
+}
+
+.backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+@keyframes button {
+    from {
+        background-color: var(--main-color);
+    }
+
+    to {
+        background-color: var(--secondary-color);
+        color: var(--main-color);
+    }
+}
