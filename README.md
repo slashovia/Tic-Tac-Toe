@@ -1,8 +1,10 @@
 # The Odin Project's Project: Tic-Tac-Toe
 
-Create Tic-Tac-Toe game. [Project's Link](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)
+The project involves creating a Tic-Tac-Toe game. [Link to the project description](https://www.theodinproject.com/lessons/node-path-javascript-tic-tac-toe)
 
 ## Structure
+
+The project has been set up using npm and Webpack.
 
 ### HTML File
 
@@ -20,7 +22,7 @@ The body includes:
 
 ### Reset CSS File
 
-Nothing to say here, it just contains a bunch of base formatting rules to ensure consistent styling across the project.
+This file contains base formatting rules to ensure consistent styling across different browsers.
 
 ### Main CSS File
 
@@ -34,18 +36,18 @@ The "Start Button" and "New game button" have animation properties including a c
 
 ### Javascript File
 
-Most functionality resides here, organized into three main IIFEs:
+Most functionality resides here, organized into four files:
 
-1. Declares variables and includes all functions that modify DOM elements, such as:
- - Updating player info;
- - Opening and closing the dialog;
- - Starting/Stopping animations;
- - Cell actions (reset, click, over, out);
- - Adding addEventListener for buttons.
+1. Index: imports the main functions and CSS file.
 
-2. Menages player creation, including names, markers and scores.
+2. Player: this module contains factory functions for creating players and managing the currentPlayer.
 
-3. Handles the Tic-Tac-Toe game logic, including:
+3. DomManager: includes main IIFEs for handling elements dom's, such as:
+- Creating the gameboard; 
+- Handling the dialog;
+ - Adding button animations and controls.
+
+4. GameLogic: manages the core game logic, including:
  - Switching turn;
  - Checking moves;
  - Resetting rounds and game.
