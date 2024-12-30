@@ -1,4 +1,7 @@
+import { mouse } from "./mouse";
+
 export const gameBoardManager = function () {
+
     let cellEvents = {
         'click': (event) => {
             mouse.click(event.target, currentPlayer.player);
