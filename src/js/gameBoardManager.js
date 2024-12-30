@@ -1,4 +1,7 @@
 import { mouse } from "./mouse";
+import { currentPlayer } from "./player";
+
+let cells;
 
 export const gameBoardManager = function () {
 
@@ -13,11 +16,7 @@ export const gameBoardManager = function () {
             mouse.out(event.target)
         }
     }
-    function cellEvents(event) {
-        if (cellEvents[event.type]) {
-            cellEvents[event.type](event)
-        }
-    }
+
     function createBoard() {
         const gameBoard = document.querySelector('.gameboard')
         for (let i = 0; i < 9; i++) {
@@ -57,13 +56,16 @@ export const gameBoardManager = function () {
         }
         )
     }
+
+    function getCells() {
+        return cells
+    }
     return {
         createBoard,
         handlerCellEvents,
         winnerCells,
         resetCells,
-        cellEvents,
-        removeHoverEvents
+        removeHoverEvents, getCells
     }
 
 }
