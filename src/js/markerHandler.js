@@ -1,9 +1,9 @@
 export const markHandler = function () {
-    const markers = form.querySelectorAll('input[name="p1marker"], input[name="p2marker"]')
-    const p1markerX = form.querySelector('#p1markerX')
-    const p1markerO = form.querySelector('#p1markerO')
-    const p2markerX = form.querySelector('#p2markerX')
-    const p2markerO = form.querySelector('#p2markerO')
+    const markers = document.querySelectorAll('input[name="p1marker"], input[name="p2marker"]')
+    const p1markerX = document.querySelector('#p1markerX')
+    const p1markerO = document.querySelector('#p1markerO')
+    const p2markerX = document.querySelector('#p2markerX')
+    const p2markerO = document.querySelector('#p2markerO')
 
     function switchMarkers() {
         for (const mark of markers) {
@@ -22,4 +22,4 @@ export const markHandler = function () {
     return {
         switchMarkers
     }
-}
+}()
