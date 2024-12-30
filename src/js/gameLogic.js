@@ -1,20 +1,22 @@
-import { player1, player2, startBtn, resetBtn, cells, domManager, buttonHandler } from "./domManager";
-
 import { currentPlayer } from "./player";
+import { buttonHandler } from "./buttonManager";
+import { gameBoardManager } from "./gameBoardManager";
+import { player1, player2 } from "./playerFormHandler";
+import { playerDisplayManager } from "./playerDisplayManager";
 
 export const game = function () {
     function switchTurn() {
         currentPlayer.player = (currentPlayer.player === player1) ? player2 : player1;
-        domManager.updateCurrentPlayer()
+        playerDisplayManager.updateCurrentPlayer()
     }
     function resetRound() {
         switchTurn();
-        domManager.resetCells();
+        gameBoardManager.resetCells();
         currentPlayer.player.move();
     }
 
     function showMessageAndReset(message) {
-        domManager.removeHoverEvents();
+        gameBoardManager.removeHoverEvents();
         setTimeout(() => {
             alert(message);
             resetRound();
@@ -22,13 +24,14 @@ export const game = function () {
     }
 
     function handleWinner([a, b, c]) {
-        domManager.winnerCells([a, b, c]);
+        gameBoardManager.winnerCells([a, b, c]);
         showMessageAndReset(`${currentPlayer.player.name} wins!`)
         currentPlayer.player.increaseScore();
-        domManager.updateScorePlayer(currentPlayer.player)
+        playerDisplayManager.updateScorePlayer(currentPlayer.player)
     }
 
     function checkForTie() {
+        const cells = gameBoardManager.getCells()
         const allFilled = Array.from(cells).every(c => c.textContent);
         if (allFilled) {
             showMessageAndReset(`It's a tie!`)
@@ -38,11 +41,11 @@ export const game = function () {
     }
 
     function resetGame() {
-        domManager.resetCells();
+        gameBoardManager.resetCells();
         player1.resetScore();
         player2.resetScore();
-        domManager.updateScorePlayer(player1)
-        domManager.updateScorePlayer(player2)
+        playerDisplayManager.updateScorePlayer(player1)
+        playerDisplayManager.updateScorePlayer(player2)
         currentPlayer.player.move();
     }
 
@@ -54,6 +57,8 @@ export const game = function () {
     }
     return {
         checkMove: function () {
+            const cells = gameBoardManager.getCells()
+
             const winConditions = [
                 [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
                 [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
