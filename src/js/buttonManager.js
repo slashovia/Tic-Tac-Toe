@@ -13,4 +13,4 @@ export const buttonHandler = function () {
             btn.disabled = false;
         }
     }
-}
+}()
