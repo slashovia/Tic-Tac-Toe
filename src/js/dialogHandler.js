@@ -1,3 +1,6 @@
+import { markHandler } from './markerHandler'
+import { playerFormHandler } from './playerFormHandler';
+
 export const dialogHandler = function () {
     const dialog = document.querySelector('dialog');
     const backdrop = document.querySelector('.backdrop')
@@ -11,23 +14,25 @@ export const dialogHandler = function () {
         dialog.showModal();
         backdrop.style.display = 'block';
         dialog.addEventListener('keydown', handleKeyDown)
-        switchPlayerMarkers();
+        markHandler.switchMarkers();
+        playerFormHandler.submit()
     }
 
     function closeDialog() {
         dialog.close();
         backdrop.style.display = 'none';
-        clearInputs()
+        playerFormHandler.clear()
     }
+
+
+    closeBtn.addEventListener('click', closeDialog)
+
     return {
         open: function () {
             const newGameBtn = document.querySelector('#newGameBtn');
             newGameBtn.removeEventListener('click', openDialog)
             newGameBtn.addEventListener('click', openDialog);
         },
-        close: function () {
-            const closeBtn = form.querySelector('#closeBtn');
-            closeBtn.addEventListener('click', closeDialog)
-        }
+        close: closeDialog
     }
-}
+}()
