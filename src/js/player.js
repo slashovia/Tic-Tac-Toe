@@ -1,8 +1,8 @@
-import { cells, domManager } from "./domManager";
+import { gameBoardManager } from './gameBoardManager'
 
 export function createPlayer(name, marker) {
     let score = 0;
-
+    const cells = gameBoardManager.getCells();
     return {
         get name() {
             return name
@@ -21,13 +21,13 @@ export function createPlayer(name, marker) {
         },
         move: function () {
             cells.forEach(c => {
-                c.removeEventListener('click', domManager.handlerCellEvents);
-                c.removeEventListener('mouseover', domManager.handlerCellEvents);
-                c.removeEventListener('mouseout', domManager.handlerCellEvents);
+                c.removeEventListener('click', gameBoardManager.handlerCellEvents);
+                c.removeEventListener('mouseover', gameBoardManager.handlerCellEvents);
+                c.removeEventListener('mouseout', gameBoardManager.handlerCellEvents);
 
-                c.addEventListener('click', domManager.handlerCellEvents);
-                c.addEventListener('mouseover', domManager.handlerCellEvents);
-                c.addEventListener('mouseout', domManager.handlerCellEvents);
+                c.addEventListener('click', gameBoardManager.handlerCellEvents);
+                c.addEventListener('mouseover', gameBoardManager.handlerCellEvents);
+                c.addEventListener('mouseout', gameBoardManager.handlerCellEvents);
             });
         },
         scoreElement: null,
