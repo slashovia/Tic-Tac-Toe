@@ -1,3 +1,5 @@
+import { currentPlayer } from './player'
+
 export const playerDisplayManager = function () {
     return {
         updateCurrentPlayer: function () {
@@ -42,4 +44,4 @@ export const playerDisplayManager = function () {
             document.querySelectorAll('.info p:not(.current-player)').forEach(p => p.remove());
         }
     }
-}
+}()
