@@ -1,3 +1,5 @@
+import { game } from "./gameLogic";
+
 export const mouse = function () {
     return {
         click: function (cell, player) {
@@ -30,4 +32,4 @@ export const mouse = function () {
             }
         }
     }
-};
+}()
