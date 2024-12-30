@@ -1,3 +1,12 @@
+import { playerDisplayManager } from "./playerDisplayManager";
+import { createPlayer, currentPlayer } from "./player";
+import { gameBoardManager } from "./gameBoardManager";
+import { buttonHandler } from "./buttonManager"
+import { game } from "./gameLogic";
+import { dialogHandler } from "./dialogHandler";
+
+export let player1, player2
+
 export const playerFormHandler = function () {
     const form = document.querySelector('form');
 
@@ -22,43 +31,33 @@ export const playerFormHandler = function () {
     }
 
     function createPlayersAndStartGame() {
-        domManager.removePlayer();
+        playerDisplayManager.removePlayer();
         const p1name = form.querySelector('#p1name').value;
         const p2name = form.querySelector('#p2name').value;
         const p1marker = form.querySelector('input[name="p1marker"]:checked').value;
         const p2marker = form.querySelector('input[name="p2marker"]:checked').value;
         const startingPlayer = form.querySelector('input[name="firstToMove"]:checked').value;
+        let player1Element, player2Element
         player1 = createPlayer(p1name, p1marker);
         player2 = createPlayer(p2name, p2marker);
-
-        let player1Element, player2Element
-
-        if (startingPlayer === 'player1') {
-            player1Element = domManager.createPlayer(player1)
-            player2Element = domManager.createPlayer(player2)
-            currentPlayer.player = player1
-        }
-        else {
-            player2Element = domManager.createPlayer(player2)
-            player1Element = domManager.createPlayer(player1)
-            currentPlayer.player = player2
-        }
+        player1Element = playerDisplayManager.createPlayer(player1)
+        player2Element = playerDisplayManager.createPlayer(player2)
         player1.scoreElement = player1Element;
         player2.scoreElement = player2Element;
-
-        domManager.resetCells();
-        closeDialog();
+        startingPlayer === 'player1' ? currentPlayer.player = player1 : currentPlayer.player = player2
+        dialogHandler.close()
+        gameBoardManager.resetCells();
         buttonHandler.start(startBtn);
         buttonHandler.end(newGameBtn);
         buttonHandler.enable(startBtn)
-        domManager.removeHoverEvents()
-        game.start();
+        gameBoardManager.removeHoverEvents()
         game.reset()
-        domManager.updateCurrentPlayer()
+        game.start();
+        playerDisplayManager.updateCurrentPlayer()
     }
 
     return {
         submit: handleFormSubmit,
         clear: clearInputs
     }
-}
+}()
