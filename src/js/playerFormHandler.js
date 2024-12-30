@@ -56,6 +56,7 @@ export const playerFormHandler = function () {
         game.reset()
         domManager.updateCurrentPlayer()
     }
+
     return {
         submit: handleFormSubmit,
         clear: clearInputs
