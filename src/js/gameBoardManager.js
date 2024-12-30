@@ -65,7 +65,8 @@ export const gameBoardManager = function () {
         handlerCellEvents,
         winnerCells,
         resetCells,
-        removeHoverEvents, getCells
+        removeHoverEvents,
+        getCells
     }
 
-}
+}()
