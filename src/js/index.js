@@ -1,11 +1,13 @@
 import '../css/style.css'
 
-import { dialogHandler, domManager } from './domManager'
+import { dialogHandler } from './dialogHandler';
+import { gameBoardManager } from './gameBoardManager';
+import { playerFormHandler } from './playerFormHandler';
 
 document.addEventListener('DOMContentLoaded', () => {
     dialogHandler.open();
     dialogHandler.close();
-    dialogHandler.submit();
+    playerFormHandler.submit();
 });
 
-domManager.createBoard()
+gameBoardManager.createBoard()
